@@ -8,10 +8,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fetcher.ConcurrentCachingFetcherWrapper;
-import com.fetcher.ConcurrentFetcherWrapper;
-import com.fetcher.DualConcurrentCachingFetcherWrapper;
-import com.fetcher.Fetcher;
 import com.fetcher.exception.FetcherException;
 import com.fetcher.response.DualFetcherResponse;
 

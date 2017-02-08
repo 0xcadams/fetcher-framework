@@ -4,9 +4,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fetcher.CachingFetcherWrapper;
-import com.fetcher.DualWaterfallCachingFetcherWrapper;
-import com.fetcher.Fetcher;
 import com.fetcher.exception.FetcherException;
 import com.fetcher.response.DualFetcherResponse;
 
@@ -65,7 +62,7 @@ public class DualWaterfallCachingFetcherWrapperTest {
             fetcher.fetch().value();
             Assert.fail(); // should not reach this
         } catch (final FetcherException e) {
-            Assertions.assertThat(e.getMessage()).isEqualTo("com.valure.fetcher.exception.FetcherException: should reach here!");
+            Assertions.assertThat(e.getMessage()).isEqualTo("com.fetcher.exception.FetcherException: should reach here!");
         }
 
     }

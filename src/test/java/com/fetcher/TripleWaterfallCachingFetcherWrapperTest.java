@@ -4,11 +4,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fetcher.CachingFetcherWrapper;
-import com.fetcher.Fetcher;
-import com.fetcher.TripleWaterfallCachingFetcherWrapper;
 import com.fetcher.exception.FetcherException;
 import com.fetcher.response.TripleFetcherResponse;
+import com.fetcher.response.source.QuadrupleSource;
+import com.fetcher.response.source.TripleSource;
 
 public class TripleWaterfallCachingFetcherWrapperTest {
 
@@ -28,6 +27,7 @@ public class TripleWaterfallCachingFetcherWrapperTest {
             Assert.assertEquals("test", fetcher.fetch().value());
             Assert.assertEquals("test", fetcher.fetch().value());
             Assert.assertEquals("test", fetcher.fetch().value());
+            Assert.assertEquals(true, fetcher.fetch().source().isEqualTo(TripleSource.PRIMARY));
         } catch (final FetcherException e) {
             e.printStackTrace();
             Assert.fail();
@@ -50,6 +50,7 @@ public class TripleWaterfallCachingFetcherWrapperTest {
             Assert.assertEquals("test", fetcher.fetch().value());
             Assert.assertEquals("test", fetcher.fetch().value());
             Assert.assertEquals("test", fetcher.fetch().value());
+            Assert.assertEquals(true, fetcher.fetch().source().isEqualTo(TripleSource.SECONDARY));
         } catch (final FetcherException e) {
             e.printStackTrace();
             Assert.fail();
@@ -72,6 +73,7 @@ public class TripleWaterfallCachingFetcherWrapperTest {
             Assert.assertEquals("test", fetcher.fetch().value());
             Assert.assertEquals("test", fetcher.fetch().value());
             Assert.assertEquals("test", fetcher.fetch().value());
+            Assert.assertEquals(true, fetcher.fetch().source().isEqualTo(TripleSource.TERTIARY));
         } catch (final FetcherException e) {
             e.printStackTrace();
             Assert.fail();
@@ -94,7 +96,7 @@ public class TripleWaterfallCachingFetcherWrapperTest {
             fetcher.fetch();
             Assert.fail(); // should not reach this
         } catch (final FetcherException e) {
-            Assertions.assertThat(e.getMessage()).isEqualTo("com.valure.fetcher.exception.FetcherException: should reach here!");
+            Assertions.assertThat(e.getMessage()).isEqualTo("com.fetcher.exception.FetcherException: should reach here!");
         }
 
     }

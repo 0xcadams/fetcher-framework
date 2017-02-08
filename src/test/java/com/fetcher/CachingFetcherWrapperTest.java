@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fetcher.CachingFetcherWrapper;
-import com.fetcher.Fetcher;
 import com.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.fetcher.exception.FetcherException;
 

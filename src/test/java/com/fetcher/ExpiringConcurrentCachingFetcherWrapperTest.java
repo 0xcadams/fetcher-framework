@@ -16,9 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.fetcher.ConcurrentFetcherWrapper;
-import com.fetcher.ExpiringConcurrentCachingFetcherWrapper;
-import com.fetcher.Fetcher;
 import com.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.fetcher.exception.FetcherException;
 

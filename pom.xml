@@ -4,10 +4,11 @@
 
 	<groupId>fetcher</groupId>
 	<artifactId>fetcher-framework</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 
 	<name>Fetcher Framework</name>
 	<description>A Java framework for effortlessly writing loosely-coupled code designed for failure.</description>
+	<url>http://maven.apache.org</url>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -15,6 +16,18 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://svn.apache.org/viewvc/maven</url>
+	</scm>
+	
 	<dependencies>
 
 		<dependency>

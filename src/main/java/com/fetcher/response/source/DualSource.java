@@ -10,32 +10,32 @@ public enum DualSource implements Source {
         this.rank = rank;
     }
 
-    protected int getRank() {
+    public int getRank() {
         return this.rank;
     }
 
     @Override
-    public boolean isBefore(final QuadrupleSource other) {
+    public boolean isBefore(final Source other) {
         return this.rank < other.getRank();
     }
 
     @Override
-    public boolean isAfter(final QuadrupleSource other) {
+    public boolean isAfter(final Source other) {
         return this.rank > other.getRank();
     }
 
     @Override
-    public boolean isEqualTo(final QuadrupleSource other) {
+    public boolean isEqualTo(final Source other) {
         return this.rank == other.getRank();
     }
 
     @Override
-    public boolean isBeforeOrEqualTo(final QuadrupleSource other) {
+    public boolean isBeforeOrEqualTo(final Source other) {
         return this.rank <= other.getRank();
     }
 
     @Override
-    public boolean isAfterOrEqualTo(final QuadrupleSource other) {
+    public boolean isAfterOrEqualTo(final Source other) {
         return this.rank >= other.getRank();
     }
 

@@ -13,8 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import com.fetcher.ExpiringCachingFetcherWrapper;
-import com.fetcher.Fetcher;
 import com.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.fetcher.exception.FetcherException;
 

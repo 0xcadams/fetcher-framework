@@ -6,14 +6,16 @@ package com.fetcher.response.source;
 
 public interface Source {
 
-    public boolean isBefore(QuadrupleSource other);
+    public int getRank();
+    
+    public boolean isBefore(Source other);
 
-    public boolean isAfter(QuadrupleSource other);
+    public boolean isAfter(Source other);
 
-    public boolean isEqualTo(QuadrupleSource other);
+    public boolean isEqualTo(Source other);
 
-    public boolean isBeforeOrEqualTo(QuadrupleSource other);
+    public boolean isBeforeOrEqualTo(Source other);
 
-    public boolean isAfterOrEqualTo(QuadrupleSource other);
+    public boolean isAfterOrEqualTo(Source other);
 
 }

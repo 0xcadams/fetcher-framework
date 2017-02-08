@@ -16,9 +16,6 @@ import java.util.concurrent.Future;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fetcher.ConcurrentCachingFetcherWrapper;
-import com.fetcher.ConcurrentFetcherWrapper;
-import com.fetcher.Fetcher;
 import com.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.fetcher.exception.FetcherException;
 import com.fetcher.exception.FetcherNotReadyException;
