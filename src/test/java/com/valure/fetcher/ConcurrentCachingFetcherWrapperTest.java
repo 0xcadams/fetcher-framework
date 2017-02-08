@@ -1,3 +1,7 @@
+/**
+ * @author  cadams2
+ * @since   Feb 8, 2017
+ */
 package com.valure.fetcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,20 +12,41 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.valure.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.valure.fetcher.exception.FetcherException;
+import com.valure.fetcher.exception.FetcherNotReadyException;
 
-public class CachingFetcherWrapperTest {
+public class ConcurrentCachingFetcherWrapperTest {
+
+    @Test
+    public void testConcurrentCachingFetcherWrapper() {
+
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
+
+            @Override
+            public String fetch() throws FetcherException {
+                return "test";
+            }
+
+        }));
+
+    }
 
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> "test");
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
+
+            @Override
+            public String fetch() throws FetcherException {
+                return "test";
+            }
+
+        }));
 
         try {
             Assert.assertEquals("test", fetcher.fetch());
@@ -39,37 +64,20 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> null);
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
 
-        try {
-            fetcher.fetch();
-            Assert.fail();
-        } catch (final FetcherException e) {
-
-        }
-
-    }
-
-    @Test
-    public void cachingFetcherWrapperNullPointerExceptionTest() {
-
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(new Fetcher<String>() {
-
-            @SuppressWarnings("null")
             @Override
             public String fetch() throws FetcherException {
-                final String test = null;
-                test.equals(null);
-                return test;
+                return null;
             }
 
-        });
+        }));
 
         try {
             fetcher.fetch();
             Assert.fail();
         } catch (final FetcherException e) {
-            Assert.assertEquals(e.getCause().getClass(), NullPointerException.class);
+
         }
 
     }
@@ -77,9 +85,14 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
-            throw new FetcherException(new NullPointerException());
-        });
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
+
+            @Override
+            public String fetch() throws FetcherException {
+                throw new FetcherException(new RuntimeException());
+            }
+
+        }));
 
         try {
             fetcher.fetch();
@@ -95,37 +108,46 @@ public class CachingFetcherWrapperTest {
 
         final int timeWait = 300;
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
 
-            try {
-                Thread.sleep(timeWait); // do something time-consuming
-            } catch (final InterruptedException e) {
-                throw new FetcherException(e);
+            @Override
+            public String fetch() throws FetcherException {
+
+                try {
+                    Thread.sleep(timeWait); // do something time-consuming
+                } catch (final InterruptedException e) {
+                    throw new FetcherException(e);
+                }
+
+                return "";
+
             }
 
-            final StringBuffer sb = new StringBuffer();
+        }));
 
-            for (int i = 0; i < 100000; i++) {
-                sb.append("this is a very long string");
-            }
+        try {
+            fetcher.fetch();
+            Assert.fail();
+        } catch (final FetcherException e) {
+            Assert.assertEquals(e.getCause().getClass(), FetcherNotReadyException.class);
+        }
 
-            return sb.toString();
-
-        });
+        try {
+            Thread.sleep(timeWait * 2); // do something time-consuming
+        } catch (final InterruptedException e) {
+            fail(e.getMessage());
+        }
 
         try {
 
-            final long startTime = System.currentTimeMillis();
-
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-
-            Assert.assertTrue((System.currentTimeMillis() - startTime) < (timeWait * 2));
 
         } catch (final FetcherException e) {
+            e.printStackTrace();
             Assert.fail();
         }
 
@@ -134,14 +156,21 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
-            throw new FetcherException(new NullPointerException());
-        });
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
+
+            @Override
+            public String fetch() throws FetcherException {
+                throw new FetcherException(new RuntimeException());
+            }
+
+        }));
 
         try {
             fetcher.fetch();
             Assert.fail();
         } catch (final FetcherException e) {
+
+            //            System.o
 
             Assert.assertEquals(e.getCause().getClass(), FetcherException.class);
 
@@ -160,9 +189,14 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingMultiThreadedFetcherClearObjWrapperTest() {
 
-        final CachingFetcherWrapper<String> fetcher = new CachingFetcherWrapper<String>(() -> {
-            return "test_ret";
-        });
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(new Fetcher<String>() {
+
+            @Override
+            public String fetch() throws FetcherException {
+                return "test_ret";
+            }
+
+        }));
 
         final List<Future<String>> futures = new ArrayList<>();
 
@@ -176,7 +210,7 @@ public class CachingFetcherWrapperTest {
 
                     @Override
                     public String call() throws Exception {
-                        
+
                         Thread.sleep(1);
 
                         try {
@@ -199,7 +233,9 @@ public class CachingFetcherWrapperTest {
                             assertThat(fetcher.clearCachedObject()).isEqualTo(true);
 
                         } catch (FetcherException e) {
-                            fail(e.getMessage());
+                            if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
+                                fail(e.getMessage());
+                            }
                         }
 
                         return "";
@@ -220,6 +256,7 @@ public class CachingFetcherWrapperTest {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
                 fail(e.getMessage());
             }
         }

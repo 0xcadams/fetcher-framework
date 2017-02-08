@@ -1,23 +1,23 @@
 package com.valure.fetcher.response;
 
-import com.valure.fetcher.response.source.DualSource;
+import com.valure.fetcher.response.source.QuadrupleSource;
 
-public class DualFetcherResponse<T> implements FetcherResponse<T> {
+public class QuadrupleFetcherResponse<T> implements FetcherResponse<T> {
 
-    private final DualSource source;
+    private final QuadrupleSource source;
     private final T value;
 
     /**
      * @param source
      * @param value
      */
-    public DualFetcherResponse(final DualSource source, final T value) {
+    public QuadrupleFetcherResponse(final QuadrupleSource source, final T value) {
         this.source = source;
         this.value = value;
     }
 
     @Override
-    public DualSource source() {
+    public QuadrupleSource source() {
         return this.source;
     }
 

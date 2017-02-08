@@ -3,7 +3,7 @@ package com.valure.fetcher;
 import com.valure.fetcher.exception.FetcherErrorCallback;
 import com.valure.fetcher.exception.FetcherException;
 import com.valure.fetcher.response.DualFetcherResponse;
-import com.valure.fetcher.response.DualSource;
+import com.valure.fetcher.response.source.DualSource;
 
 public class DualWaterfallCachingFetcherWrapper<T> implements Fetcher<DualFetcherResponse<T>> {
 
@@ -14,16 +14,13 @@ public class DualWaterfallCachingFetcherWrapper<T> implements Fetcher<DualFetche
     private final CachingFetcherWrapper<T> fetcherOne;
     private final CachingFetcherWrapper<T> fetcherTwo;
 
-    public DualWaterfallCachingFetcherWrapper(final CachingFetcherWrapper<T> fetcherOne,
-                                              final CachingFetcherWrapper<T> fetcherTwo) {
+    public DualWaterfallCachingFetcherWrapper(final CachingFetcherWrapper<T> fetcherOne, final CachingFetcherWrapper<T> fetcherTwo) {
         this.fetcherOne = fetcherOne;
         this.fetcherTwo = fetcherTwo;
         this.errorCallback = DualWaterfallCachingFetcherWrapper.DEFAULT_ERROR_CALLBACK;
     }
 
-    public DualWaterfallCachingFetcherWrapper(final CachingFetcherWrapper<T> fetcherOne,
-                                              final CachingFetcherWrapper<T> fetcherTwo,
-                                              final FetcherErrorCallback errorCallback) {
+    public DualWaterfallCachingFetcherWrapper(final CachingFetcherWrapper<T> fetcherOne, final CachingFetcherWrapper<T> fetcherTwo, final FetcherErrorCallback errorCallback) {
         this.fetcherOne = fetcherOne;
         this.fetcherTwo = fetcherTwo;
         this.errorCallback = errorCallback;
@@ -34,8 +31,7 @@ public class DualWaterfallCachingFetcherWrapper<T> implements Fetcher<DualFetche
 
         try {
             return new DualFetcherResponse<T>(DualSource.PRIMARY, this.fetcherOne.fetch());
-        }
-        catch (final FetcherException e) {
+        } catch (final FetcherException e) {
             this.errorCallback.onError(e);
             return new DualFetcherResponse<T>(DualSource.PRIMARY, this.fetcherTwo.fetch());
         }

@@ -9,7 +9,7 @@ public class ExpiringConcurrentCachingFetcherWrapper<T> extends ConcurrentCachin
     private final double maxCacheTimeMs;
 
     public ExpiringConcurrentCachingFetcherWrapper(final ConcurrentFetcherWrapper<T> fetcher) {
-        this(fetcher, DEFAULT_MAX_CACHE_TIME);
+        this(fetcher, ExpiringConcurrentCachingFetcherWrapper.DEFAULT_MAX_CACHE_TIME);
     }
 
     public ExpiringConcurrentCachingFetcherWrapper(final ConcurrentFetcherWrapper<T> fetcher, final int maxCacheTimeMs) {
@@ -25,10 +25,10 @@ public class ExpiringConcurrentCachingFetcherWrapper<T> extends ConcurrentCachin
     @Override
     public synchronized T fetch() throws FetcherException {
 
-        if ((System.currentTimeMillis() - lastClearTime) >= maxCacheTimeMs) {
+        if ((System.currentTimeMillis() - this.lastClearTime) >= this.maxCacheTimeMs) {
             this.clearCachedObject();
             this.concurrentFetcherWrapper.clearFuture();
-            lastClearTime = System.currentTimeMillis();
+            this.lastClearTime = System.currentTimeMillis();
         }
 
         return super.fetch();

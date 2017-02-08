@@ -10,7 +10,7 @@ import com.valure.fetcher.exception.FetcherErrorCallback;
 import com.valure.fetcher.exception.FetcherException;
 import com.valure.fetcher.exception.FetcherNotReadyException;
 import com.valure.fetcher.response.DualFetcherResponse;
-import com.valure.fetcher.response.DualSource;
+import com.valure.fetcher.response.source.DualSource;
 
 public class DualConcurrentCachingFetcherWrapper<T> implements Fetcher<DualFetcherResponse<T>> {
 
@@ -60,25 +60,17 @@ public class DualConcurrentCachingFetcherWrapper<T> implements Fetcher<DualFetch
         try {
             return new DualFetcherResponse<T>(DualSource.PRIMARY, this.fetcherPrimary.fetch());
         } catch (final FetcherException e) {
-            if (e.getCause().getClass().equals(FetcherNotReadyException.class)) {
-                this.fetcherPrimary.clearPreviousException();
-            } else {
-                this.errorCallback.onError(e);
-            }
+            this.errorCallback.onError(e);
         }
 
         try {
             return new DualFetcherResponse<T>(DualSource.SECONDARY, this.fetcherSecondary.fetch());
         } catch (final FetcherException e) {
-            if (e.getCause().getClass().equals(FetcherNotReadyException.class)) {
-                this.fetcherSecondary.clearPreviousException();
-            } else {
-                this.errorCallback.onError(e);
-            }
+            this.errorCallback.onError(e);
         }
 
-        if (this.countAttempts.getAndIncrement() >= maxAttempts) {
-            timeoutCallback.onError(new FetcherNotReadyException("Max attempts reached for SubstitutingCachingFetcherWrapper"));
+        if (this.countAttempts.getAndIncrement() >= this.maxAttempts) {
+            this.timeoutCallback.onError(new FetcherNotReadyException("Max attempts reached for SubstitutingCachingFetcherWrapper"));
         }
 
         return this.fetch();

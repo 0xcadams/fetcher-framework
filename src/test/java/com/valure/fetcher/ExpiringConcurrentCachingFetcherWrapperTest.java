@@ -194,6 +194,7 @@ public class ExpiringConcurrentCachingFetcherWrapperTest {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
                 fail(e.getMessage());
             }
         }

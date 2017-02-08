@@ -1,8 +1,8 @@
 package com.valure.fetcher.response;
 
-import com.valure.fetcher.model.GsonableData;
+import com.valure.fetcher.response.source.TripleSource;
 
-public class TripleFetcherResponse<T> extends GsonableData {
+public class TripleFetcherResponse<T> implements FetcherResponse<T> {
 
     private final TripleSource source;
     private final T value;
@@ -16,10 +16,12 @@ public class TripleFetcherResponse<T> extends GsonableData {
         this.value = value;
     }
 
+    @Override
     public TripleSource source() {
         return this.source;
     }
 
+    @Override
     public T value() {
         return this.value;
     }
