@@ -1,15 +1,17 @@
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching.multi;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
+import com.rentworthy.fetcher.response.MultiFetcher;
 import com.rentworthy.fetcher.response.source.Source;
 import com.rentworthy.fetcher.response.source.UnlimitedSource;
 
-public class WaterfallCachingFetcherWrapper<T> implements Fetcher<FetcherResponse<T>> {
+public class WaterfallCachingFetcherWrapper<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> e.printStackTrace();
 
@@ -48,7 +50,7 @@ public class WaterfallCachingFetcherWrapper<T> implements Fetcher<FetcherRespons
             final CachingFetcherWrapper<T> fetcher = this.fetchers.get(i);
 
             try {
-                return this.getFetcherResponse(i + 1, fetcher.fetch());
+                return FetcherResponse.getFetcherResponse(i + 1, fetcher.fetch());
             }
             catch (final FetcherException e) {
                 this.errorCallback.onError(e);
@@ -56,27 +58,11 @@ public class WaterfallCachingFetcherWrapper<T> implements Fetcher<FetcherRespons
 
         }
 
-        return this.getFetcherResponse(this.fetchers.size(),
+        return FetcherResponse.getFetcherResponse(this.fetchers.size(),
             this.fetchers.get(this.fetchers.size() - 1).fetch());
 
     }
 
-    private FetcherResponse<T> getFetcherResponse(final int rankFinal, final T value) {
-
-        return new FetcherResponse<T>() {
-
-            @Override
-            public Source source() {
-                return UnlimitedSource.valueOf(rankFinal);
-            }
-
-            @Override
-            public T value() {
-                return value;
-            }
-
-        };
-
-    }
+    
 
 }

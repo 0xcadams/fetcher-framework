@@ -2,16 +2,8 @@ package com.rentworthy.fetcher.response.source;
 
 public enum UnlimitedSource implements Source {
 
-    PRIMARY(1),
-    SECONDARY(2),
-    TERTIARY(3),
-    QUATERNARY(4),
-    QUINARY(5),
-    SENARY(6),
-    SEPTENARY(7),
-    OCTONARY(8),
-    NONARY(9),
-    DENARY(10);
+    FIRST(1), SECOND(2), THIRD(3), FOURTH(4), FIFTH(5), SIXTH(6), SEVENTH(7), EIGHTH(8), NINTH(9), TENTH(10), ELEVENTH(11), TWELFTH(12), THIRTEENTH(13), FOURTEENTH(14), FIFTEENTH(15), SIXTEENTH(
+            16), SEVENTEENTH(17), EIGHTEENTH(18), NINETEENTH(19), TWENTIETH(20), UNKNOWN(-1);
 
     private final int rank;
 
@@ -21,36 +13,13 @@ public enum UnlimitedSource implements Source {
 
     public static UnlimitedSource valueOf(final int rank) {
 
-        if (rank == PRIMARY.getRank()) {
-            return UnlimitedSource.PRIMARY;
+        for (UnlimitedSource src : UnlimitedSource.values()) {
+            if (rank == src.getRank()) {
+                return src;
+            }
         }
-        else if (rank == SECONDARY.getRank()) {
-            return UnlimitedSource.SECONDARY;
-        }
-        else if (rank == TERTIARY.getRank()) {
-            return UnlimitedSource.TERTIARY;
-        }
-        else if (rank == QUATERNARY.getRank()) {
-            return UnlimitedSource.QUATERNARY;
-        }
-        else if (rank == QUINARY.getRank()) {
-            return UnlimitedSource.QUINARY;
-        }
-        else if (rank == SENARY.getRank()) {
-            return UnlimitedSource.SENARY;
-        }
-        else if (rank == SEPTENARY.getRank()) {
-            return UnlimitedSource.SEPTENARY;
-        }
-        else if (rank == OCTONARY.getRank()) {
-            return UnlimitedSource.OCTONARY;
-        }
-        else if (rank == NONARY.getRank()) {
-            return UnlimitedSource.NONARY;
-        }
-        else {
-            return UnlimitedSource.DENARY;
-        }
+        
+        return UNKNOWN;
 
     }
 

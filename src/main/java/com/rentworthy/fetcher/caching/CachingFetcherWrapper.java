@@ -1,5 +1,6 @@
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching;
 
+import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 

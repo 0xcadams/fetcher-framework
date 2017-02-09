@@ -2,19 +2,22 @@
  * @author cadams2
  * @since Feb 7, 2017
  */
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching.concurrent.multi;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
+import com.rentworthy.fetcher.caching.concurrent.multi.CachingNonBlockingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.response.FetcherResponse;
+import com.rentworthy.fetcher.response.MultiFetcher;
+import com.rentworthy.fetcher.response.source.UnlimitedSource;
 
 public class DualConcurrentCachingFetcherWrapperTest {
 
     @Test
-    public void testSubstitutingCachingFetcherWrapper() {
+    public void testDualConcurrentCachingFetcherWrapper() {
 
         final int numRuns = 1;
 
@@ -22,7 +25,7 @@ public class DualConcurrentCachingFetcherWrapperTest {
 
             final int waitTime = 500;
 
-            final Fetcher<FetcherResponse<String>> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
+            final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<String>(new NonBlockingConcurrentFetcherWrapper<String>(() -> {
                 try {
                     Thread.sleep(waitTime);
                 }
@@ -30,13 +33,14 @@ public class DualConcurrentCachingFetcherWrapperTest {
                     Assertions.fail(e.getMessage());
                 }
                 return "first";
-            }), new ConcurrentFetcherWrapper<String>(() -> {
+            }), new NonBlockingConcurrentFetcherWrapper<String>(() -> {
                 return "second";
             }));
 
             try {
                 Assert.assertEquals("second", fetcher.fetch().value());
                 Assert.assertEquals("second", fetcher.fetch().value());
+                Assert.assertEquals(UnlimitedSource.SECOND, fetcher.fetch().source());
             }
             catch (final FetcherException e) {
                 Assert.fail();
@@ -52,6 +56,7 @@ public class DualConcurrentCachingFetcherWrapperTest {
             try {
 
                 Assert.assertEquals("first", fetcher.fetch().value());
+                Assert.assertEquals(UnlimitedSource.FIRST, fetcher.fetch().source());
                 Assert.assertEquals("first", fetcher.fetch().value());
                 Assert.assertEquals("first", fetcher.fetch().value());
                 Assert.assertEquals("first", fetcher.fetch().value());
@@ -62,6 +67,7 @@ public class DualConcurrentCachingFetcherWrapperTest {
                 Assert.assertEquals("first", fetcher.fetch().value());
                 Assert.assertEquals("first", fetcher.fetch().value());
                 Assert.assertEquals("first", fetcher.fetch().value());
+                Assert.assertEquals(UnlimitedSource.FIRST, fetcher.fetch().source());
                 Assert.assertEquals("first", fetcher.fetch().value());
 
             }
@@ -74,13 +80,13 @@ public class DualConcurrentCachingFetcherWrapperTest {
     }
 
     @Test
-    public void testSubstitutingCachingFetcherWrapperFasterFailing() {
+    public void testDualConcurrentCachingFetcherWrapperFasterFailing() {
 
         final int waitTime = 500;
 
-        final Fetcher<FetcherResponse<String>> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<String>(new NonBlockingConcurrentFetcherWrapper<String>(() -> {
             return "second";
-        }), new ConcurrentFetcherWrapper<String>(() -> {
+        }), new NonBlockingConcurrentFetcherWrapper<String>(() -> {
             throw new FetcherException("faster");
         }));
 

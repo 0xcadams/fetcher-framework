@@ -26,9 +26,7 @@ public class FetcherCallable<T> implements Callable<T> {
      */
     @Override
     public T call() throws FetcherException {
-        final T val = this.fetcher.fetch();
-        System.out.println("callable returned");
-        return val;
+        return this.fetcher.fetch();
     }
 
 }

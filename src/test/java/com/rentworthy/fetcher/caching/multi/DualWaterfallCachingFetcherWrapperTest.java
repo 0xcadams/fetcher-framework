@@ -1,18 +1,19 @@
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching.multi;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.response.FetcherResponse;
+import com.rentworthy.fetcher.response.MultiFetcher;
 
 public class DualWaterfallCachingFetcherWrapperTest {
 
     @Test
     public void dualWaterfallCachingFetcherWrapperTest() {
 
-        final Fetcher<FetcherResponse<String>> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assert.fail(),
+        final MultiFetcher<String> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assert.fail(),
                                                                                                     new CachingFetcherWrapper<String>(() -> "test"),
                                                                                                     new CachingFetcherWrapper<String>(() -> {
                                                                                                         throw new FetcherException("should never reach here!");
@@ -35,7 +36,7 @@ public class DualWaterfallCachingFetcherWrapperTest {
     @Test
     public void dualWaterfallCachingFetcherWrapperBackupTest() {
 
-        final Fetcher<FetcherResponse<String>> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
+        final MultiFetcher<String> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
             e.getMessage()).contains(
                 "should never reach here!"), new CachingFetcherWrapper<String>(() -> {
                     throw new FetcherException("should never reach here!");
@@ -58,7 +59,7 @@ public class DualWaterfallCachingFetcherWrapperTest {
     @Test
     public void dualWaterfallCachingFetcherWrapperAllFailingTest() {
 
-        final Fetcher<FetcherResponse<String>> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
+        final MultiFetcher<String> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
             e.getMessage()).contains(
                 "should never reach here!"), new CachingFetcherWrapper<String>(() -> {
                     throw new FetcherException("should never reach here!");
@@ -79,7 +80,7 @@ public class DualWaterfallCachingFetcherWrapperTest {
     @Test
     public void dualWaterfallCachingFetcherWrapperTimingTest() {
 
-        final Fetcher<FetcherResponse<String>> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
+        final MultiFetcher<String> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
             e.getMessage()).contains(
                 "should never reach here!"), new CachingFetcherWrapper<String>(() -> {
 
@@ -116,7 +117,7 @@ public class DualWaterfallCachingFetcherWrapperTest {
     @Test
     public void dualWaterfallCachingFetcherWrapperTimingBackupTest() {
 
-        final Fetcher<FetcherResponse<String>> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
+        final MultiFetcher<String> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assertions.assertThat(
             e.getMessage()).contains(
                 "should never reach here!"), new CachingFetcherWrapper<String>(() -> {
 

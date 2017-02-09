@@ -1,5 +1,7 @@
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching.expiring;
 
+import com.rentworthy.fetcher.Fetcher;
+import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherException;
 
 public class ExpiringCachingFetcherWrapper<T> extends CachingFetcherWrapper<T> {

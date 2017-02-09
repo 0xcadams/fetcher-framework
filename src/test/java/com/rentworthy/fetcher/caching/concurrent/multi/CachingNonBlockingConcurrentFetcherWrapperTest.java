@@ -2,7 +2,7 @@
  * @author cadams2
  * @since Feb 8, 2017
  */
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching.concurrent.multi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -16,16 +16,18 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
+import com.rentworthy.fetcher.response.MultiFetcher;
 
-public class ConcurrentCachingFetcherWrapperTest {
+public class CachingNonBlockingConcurrentFetcherWrapperTest {
 
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test"));
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<String>(new NonBlockingConcurrentFetcherWrapper<>(() -> "test"));
 
         try {
             Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
@@ -43,7 +45,7 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> null));
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<>(new NonBlockingConcurrentFetcherWrapper<>(() -> null));
 
         try {
             fetcher.fetch().value();
@@ -58,8 +60,8 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(10,
-                                                                                                      new ConcurrentFetcherWrapper<>(() -> {
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<>(10,
+                                                                                                      new NonBlockingConcurrentFetcherWrapper<>(() -> {
                                                                                                           throw new FetcherException(new RuntimeException());
                                                                                                       }));
 
@@ -78,7 +80,7 @@ public class ConcurrentCachingFetcherWrapperTest {
 
         final int timeWait = 300;
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> {
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<>(new NonBlockingConcurrentFetcherWrapper<>(() -> {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming
@@ -124,8 +126,8 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(10,
-                                                                                                      new ConcurrentFetcherWrapper<>(() -> {
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<>(10,
+                                                                                                      new NonBlockingConcurrentFetcherWrapper<>(() -> {
                                                                                                           throw new FetcherException(new RuntimeException());
                                                                                                       }));
 
@@ -156,7 +158,9 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingMultiThreadedFetcherClearObjWrapperTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<>(() -> "test_ret"));
+        final CachingNonBlockingConcurrentFetcherWrapper<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<String>(new NonBlockingConcurrentFetcherWrapper<>(() -> {
+            return "test_ret";
+        }));
 
         final List<Future<String>> futures = new ArrayList<>();
 
