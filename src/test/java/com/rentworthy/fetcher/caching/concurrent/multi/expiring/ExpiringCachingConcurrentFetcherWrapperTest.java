@@ -13,12 +13,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.Fetcher;
+import com.rentworthy.fetcher.MultiFetcherValueWrapper;
 import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
-import com.rentworthy.fetcher.caching.concurrent.multi.expiring.ExpiringCachingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
-import com.rentworthy.fetcher.response.MultiFetcher;
 
 public class ExpiringCachingConcurrentFetcherWrapperTest {
 
@@ -29,30 +29,36 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final MultiFetcher<Integer> expire = new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
-                                                                                                              maxTimeMs);
+        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
+                                                                                                              maxTimeMs));
 
         try {
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
             Thread.sleep(maxTimeMs + 5);
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(2);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(2);
+            Assertions.assertThat(expire.fetch()).isEqualTo(2);
+            Assertions.assertThat(expire.fetch()).isEqualTo(2);
+            Assertions.assertThat(expire.fetch()).isEqualTo(2);
+            Assertions.assertThat(expire.fetch()).isEqualTo(2);
 
             Thread.sleep(maxTimeMs + 5);
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(3);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(3);
+            Assertions.assertThat(expire.fetch()).isEqualTo(3);
+            Assertions.assertThat(expire.fetch()).isEqualTo(3);
+            Assertions.assertThat(expire.fetch()).isEqualTo(3);
+            Assertions.assertThat(expire.fetch()).isEqualTo(3);
+            Assertions.assertThat(expire.fetch()).isEqualTo(3);
 
             Thread.sleep(maxTimeMs * 5);
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(4);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(4);
+            Assertions.assertThat(expire.fetch()).isEqualTo(4);
+            Assertions.assertThat(expire.fetch()).isEqualTo(4);
+            Assertions.assertThat(expire.fetch()).isEqualTo(4);
 
         }
         catch (FetcherException | InterruptedException e) {
@@ -68,35 +74,35 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final MultiFetcher<Integer> expire = new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()));
+        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet())));
 
         try {
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
             Thread.sleep(waitTimeMs + 5);
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
             Thread.sleep(waitTimeMs + 5);
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            
             Thread.sleep(waitTimeMs * 5);
 
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-            Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
+            Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
         }
         catch (FetcherException | InterruptedException e) {
@@ -112,7 +118,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final MultiFetcher<Integer> expire = new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()));
+        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet())));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 
@@ -126,31 +132,31 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
                     try {
 
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
                         Thread.sleep(waitTimeMs + 5);
 
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
                         Thread.sleep(waitTimeMs + 5);
 
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
                         Thread.sleep(waitTimeMs * 5);
 
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
-                        Assertions.assertThat(expire.fetch().value()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
+                        Assertions.assertThat(expire.fetch()).isEqualTo(1);
 
                     }
                     catch (FetcherException | InterruptedException e) {
@@ -191,8 +197,8 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final MultiFetcher<Integer> expire = new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
-                                                                                                              maxTimeMs);
+        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
+                                                                                                              maxTimeMs));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 
@@ -209,10 +215,10 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
                         for (int countRuns = 1; countRuns <= 10; countRuns++) {
 
-                            Assertions.assertThat(expire.fetch().value()).isEqualTo(countRuns);
-                            Assertions.assertThat(expire.fetch().value()).isEqualTo(countRuns);
-                            Assertions.assertThat(expire.fetch().value()).isEqualTo(countRuns);
-                            Assertions.assertThat(expire.fetch().value()).isEqualTo(countRuns);
+                            Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
+                            Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
+                            Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
+                            Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
 
                             Thread.sleep(maxTimeMs + 50);
 

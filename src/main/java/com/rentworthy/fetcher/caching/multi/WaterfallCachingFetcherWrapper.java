@@ -3,13 +3,12 @@ package com.rentworthy.fetcher.caching.multi;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
-import com.rentworthy.fetcher.response.MultiFetcher;
-import com.rentworthy.fetcher.response.source.Source;
-import com.rentworthy.fetcher.response.source.UnlimitedSource;
+import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
 public class WaterfallCachingFetcherWrapper<T> implements MultiFetcher<T> {
 
@@ -50,7 +49,7 @@ public class WaterfallCachingFetcherWrapper<T> implements MultiFetcher<T> {
             final CachingFetcherWrapper<T> fetcher = this.fetchers.get(i);
 
             try {
-                return FetcherResponse.getFetcherResponse(i + 1, fetcher.fetch());
+                return FetcherResponseFactory.getFetcherResponse(i + 1, fetcher.fetch());
             }
             catch (final FetcherException e) {
                 this.errorCallback.onError(e);
@@ -58,7 +57,7 @@ public class WaterfallCachingFetcherWrapper<T> implements MultiFetcher<T> {
 
         }
 
-        return FetcherResponse.getFetcherResponse(this.fetchers.size(),
+        return FetcherResponseFactory.getFetcherResponse(this.fetchers.size(),
             this.fetchers.get(this.fetchers.size() - 1).fetch());
 
     }

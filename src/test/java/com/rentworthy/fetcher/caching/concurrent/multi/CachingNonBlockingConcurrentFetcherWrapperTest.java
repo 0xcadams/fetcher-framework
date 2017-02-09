@@ -16,11 +16,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
-import com.rentworthy.fetcher.response.MultiFetcher;
 
 public class CachingNonBlockingConcurrentFetcherWrapperTest {
 

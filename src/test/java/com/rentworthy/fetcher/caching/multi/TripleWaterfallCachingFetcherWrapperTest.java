@@ -5,10 +5,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
+import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
-import com.rentworthy.fetcher.response.MultiFetcher;
 import com.rentworthy.fetcher.response.source.UnlimitedSource;
 
 public class TripleWaterfallCachingFetcherWrapperTest {

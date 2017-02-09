@@ -4,9 +4,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.response.MultiFetcher;
 
 public class DualWaterfallCachingFetcherWrapperTest {
 

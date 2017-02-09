@@ -8,10 +8,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.caching.concurrent.multi.CachingNonBlockingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.response.MultiFetcher;
 import com.rentworthy.fetcher.response.source.UnlimitedSource;
 
 public class DualConcurrentCachingFetcherWrapperTest {

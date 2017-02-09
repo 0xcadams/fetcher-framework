@@ -7,15 +7,14 @@ package com.rentworthy.fetcher.caching.concurrent.multi;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.concurrent.AbstractCachingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 import com.rentworthy.fetcher.response.FetcherResponse;
-import com.rentworthy.fetcher.response.MultiFetcher;
-import com.rentworthy.fetcher.response.source.Source;
-import com.rentworthy.fetcher.response.source.UnlimitedSource;
+import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
 public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetcher<T> {
 
@@ -81,7 +80,7 @@ public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetch
                 final AbstractCachingConcurrentFetcherWrapper<T> fetcher = this.fetchers.get(i);
 
                 try {
-                    return FetcherResponse.getFetcherResponse(i + 1, fetcher.fetch());
+                    return FetcherResponseFactory.getFetcherResponse(i + 1, fetcher.fetch());
                 } catch (final FetcherException e) {
                     if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
                         this.errorCallback.onError(e);
@@ -94,7 +93,7 @@ public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetch
 
         }
 
-        return FetcherResponse.getFetcherResponse(fetchers.size(), fetchers.get(fetchers.size() - 1).fetch());
+        return FetcherResponseFactory.getFetcherResponse(fetchers.size(), fetchers.get(fetchers.size() - 1).fetch());
 
     }
 
