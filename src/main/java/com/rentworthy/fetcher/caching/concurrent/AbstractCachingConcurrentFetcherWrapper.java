@@ -2,7 +2,7 @@
  * @author cadams2
  * @since Feb 8, 2017
  */
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching.concurrent;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -10,26 +10,20 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.concurrent.FetcherCallable;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class ConcurrentFetcherWrapper<T> implements Fetcher<T> {
+public abstract class AbstractCachingConcurrentFetcherWrapper<T> implements Fetcher<T> {
 
     private final static Fetcher<ExecutorService> EXECUTOR_SERVICE_FETCHER = new ExecutorServiceCachingFetcher();
-    private final static int DEFAULT_WAIT_NANOS = 3 * 1000 * 1000; // default to
-                                                                   // 3 ms wait
 
     private final Fetcher<T> fetcher;
-    private final int maxWaitNanos;
+    private final long maxWaitNanos;
 
-    public ConcurrentFetcherWrapper(final Fetcher<T> fetcher) {
-        this.fetcher = fetcher;
-        this.maxWaitNanos = ConcurrentFetcherWrapper.DEFAULT_WAIT_NANOS;
-    }
-
-    public ConcurrentFetcherWrapper(final Fetcher<T> fetcher, final int maxWaitNanos) {
+    protected AbstractCachingConcurrentFetcherWrapper(final Fetcher<T> fetcher, final long maxWaitNanos) {
         this.fetcher = fetcher;
         this.maxWaitNanos = maxWaitNanos;
     }
@@ -40,7 +34,7 @@ public class ConcurrentFetcherWrapper<T> implements Fetcher<T> {
     public synchronized T fetch() throws FetcherException {
 
         if (this.future == null) {
-            this.future = ConcurrentFetcherWrapper.EXECUTOR_SERVICE_FETCHER.fetch().submit(
+            this.future = AbstractCachingConcurrentFetcherWrapper.EXECUTOR_SERVICE_FETCHER.fetch().submit(
                 new FetcherCallable<T>(this.fetcher));
         }
 
@@ -59,8 +53,9 @@ public class ConcurrentFetcherWrapper<T> implements Fetcher<T> {
 
     }
 
-    protected synchronized void clearFuture() {
+    public synchronized boolean clearFuture() {
         this.future = null;
+        return this.future == null;
     }
 
 }

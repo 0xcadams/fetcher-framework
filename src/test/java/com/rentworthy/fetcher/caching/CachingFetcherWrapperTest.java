@@ -1,8 +1,4 @@
-/**
- * @author cadams2
- * @since Feb 8, 2017
- */
-package com.rentworthy.fetcher;
+package com.rentworthy.fetcher.caching;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,23 +9,16 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class ConcurrentCachingFetcherWrapperTest {
-
-    @Test
-    public void testConcurrentCachingFetcherWrapper() {
-
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test"));
-
-    }
+public class CachingFetcherWrapperTest {
 
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test"));
+        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> "test");
 
         try {
             Assert.assertEquals("test", fetcher.fetch());
@@ -48,7 +37,7 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> null));
+        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> null);
 
         try {
             fetcher.fetch();
@@ -61,11 +50,36 @@ public class ConcurrentCachingFetcherWrapperTest {
     }
 
     @Test
+    public void cachingFetcherWrapperNullPointerExceptionTest() {
+
+        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(new Fetcher<String>() {
+
+            @SuppressWarnings ("null")
+            @Override
+            public String fetch() throws FetcherException {
+                final String test = null;
+                test.equals(null);
+                return test;
+            }
+
+        });
+
+        try {
+            fetcher.fetch();
+            Assert.fail();
+        }
+        catch (final FetcherException e) {
+            Assert.assertEquals(e.getCause().getClass(), NullPointerException.class);
+        }
+
+    }
+
+    @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> {
-            throw new FetcherException(new RuntimeException());
-        }));
+        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+            throw new FetcherException(new NullPointerException());
+        });
 
         try {
             fetcher.fetch();
@@ -82,7 +96,7 @@ public class ConcurrentCachingFetcherWrapperTest {
 
         final int timeWait = 300;
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> {
+        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming
@@ -91,36 +105,30 @@ public class ConcurrentCachingFetcherWrapperTest {
                 throw new FetcherException(e);
             }
 
-            return "";
+            final StringBuffer sb = new StringBuffer();
 
-        }));
+            for (int i = 0; i < 100000; i++) {
+                sb.append("this is a very long string");
+            }
 
-        try {
-            fetcher.fetch();
-            Assert.fail();
-        }
-        catch (final FetcherException e) {
-            Assert.assertEquals(e.getCause().getClass(), FetcherNotReadyException.class);
-        }
+            return sb.toString();
 
-        try {
-            Thread.sleep(timeWait * 2); // do something time-consuming
-        }
-        catch (final InterruptedException e) {
-            Assertions.fail(e.getMessage());
-        }
+        });
 
         try {
 
+            final long startTime = System.currentTimeMillis();
+
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+
+            Assert.assertTrue((System.currentTimeMillis() - startTime) < (timeWait * 2));
 
         }
         catch (final FetcherException e) {
-            e.printStackTrace();
             Assert.fail();
         }
 
@@ -129,17 +137,15 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> {
-            throw new FetcherException(new RuntimeException());
-        }));
+        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+            throw new FetcherException(new NullPointerException());
+        });
 
         try {
             fetcher.fetch();
             Assert.fail();
         }
         catch (final FetcherException e) {
-
-            // System.o
 
             Assert.assertEquals(e.getCause().getClass(), FetcherException.class);
 
@@ -159,7 +165,9 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingMultiThreadedFetcherClearObjWrapperTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test_ret"));
+        final CachingFetcherWrapper<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+            return "test_ret";
+        });
 
         final List<Future<String>> futures = new ArrayList<>();
 
@@ -194,9 +202,7 @@ public class ConcurrentCachingFetcherWrapperTest {
 
                     }
                     catch (final FetcherException e) {
-                        if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
-                            Assertions.fail(e.getMessage());
-                        }
+                        Assertions.fail(e.getMessage());
                     }
 
                     return "";
@@ -217,7 +223,6 @@ public class ConcurrentCachingFetcherWrapperTest {
                 future.get();
             }
             catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
                 Assertions.fail(e.getMessage());
             }
         }
