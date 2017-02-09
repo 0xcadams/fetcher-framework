@@ -4,6 +4,9 @@
  */
 package com.rentworthy.fetcher;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -20,26 +23,18 @@ import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 public class ConcurrentCachingFetcherWrapperTest {
 
     @Test
-    public void testConcurrentCachingFetcherWrapper() {
-
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test"));
-
-    }
-
-    @Test
     public void cachingFetcherWrapperTest() {
 
         final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test"));
 
         try {
-            Assert.assertEquals("test", fetcher.fetch());
-            Assert.assertEquals("test", fetcher.fetch());
-            Assert.assertEquals("test", fetcher.fetch());
-            Assert.assertEquals("test", fetcher.fetch());
-            Assert.assertEquals("test", fetcher.fetch());
+            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
         }
         catch (final FetcherException e) {
-            e.printStackTrace();
             Assert.fail();
         }
 
@@ -51,11 +46,11 @@ public class ConcurrentCachingFetcherWrapperTest {
         final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> null));
 
         try {
-            fetcher.fetch();
-            Assert.fail();
+            fetcher.fetch().value();
+            assertThat(fetcher.fetch().value()).isNull();
         }
         catch (final FetcherException e) {
-
+            fail();
         }
 
     }
@@ -63,16 +58,17 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> {
-            throw new FetcherException(new RuntimeException());
-        }));
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(10,
+                                                                                                      new ConcurrentFetcherWrapper<>(() -> {
+                                                                                                          throw new FetcherException(new RuntimeException());
+                                                                                                      }));
 
         try {
             fetcher.fetch();
             Assert.fail();
         }
         catch (final FetcherException e) {
-            Assert.assertEquals(e.getCause().getClass(), FetcherException.class);
+            Assert.assertEquals(e.getCause().getCause().getClass(), FetcherException.class);
         }
 
     }
@@ -97,10 +93,9 @@ public class ConcurrentCachingFetcherWrapperTest {
 
         try {
             fetcher.fetch();
-            Assert.fail();
         }
         catch (final FetcherException e) {
-            Assert.assertEquals(e.getCause().getClass(), FetcherNotReadyException.class);
+            Assert.fail();
         }
 
         try {
@@ -112,11 +107,11 @@ public class ConcurrentCachingFetcherWrapperTest {
 
         try {
 
-            Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-            Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-            Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-            Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-            Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+            Assert.assertEquals(fetcher.fetch().value(), fetcher.fetch().value());
+            Assert.assertEquals(fetcher.fetch().value(), fetcher.fetch().value());
+            Assert.assertEquals(fetcher.fetch().value(), fetcher.fetch().value());
+            Assert.assertEquals(fetcher.fetch().value(), fetcher.fetch().value());
+            Assert.assertEquals(fetcher.fetch().value(), fetcher.fetch().value());
 
         }
         catch (final FetcherException e) {
@@ -129,9 +124,10 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> {
-            throw new FetcherException(new RuntimeException());
-        }));
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(10,
+                                                                                                      new ConcurrentFetcherWrapper<>(() -> {
+                                                                                                          throw new FetcherException(new RuntimeException());
+                                                                                                      }));
 
         try {
             fetcher.fetch();
@@ -141,7 +137,8 @@ public class ConcurrentCachingFetcherWrapperTest {
 
             // System.o
 
-            Assert.assertEquals(e.getCause().getClass(), FetcherException.class);
+            Assert.assertEquals(e.getCause().getCause().getCause().getClass(),
+                RuntimeException.class);
 
             try {
                 fetcher.fetch();
@@ -159,13 +156,13 @@ public class ConcurrentCachingFetcherWrapperTest {
     @Test
     public void cachingMultiThreadedFetcherClearObjWrapperTest() {
 
-        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(new ConcurrentFetcherWrapper<>(() -> "test_ret"));
+        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<>(() -> "test_ret"));
 
         final List<Future<String>> futures = new ArrayList<>();
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100; i++) {
 
             try {
 
@@ -175,22 +172,23 @@ public class ConcurrentCachingFetcherWrapperTest {
 
                     try {
 
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
 
                     }
                     catch (final FetcherException e) {

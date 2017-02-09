@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.response.DualFetcherResponse;
+import com.rentworthy.fetcher.response.FetcherResponse;
 
 public class DualConcurrentCachingFetcherWrapperTest {
 
@@ -22,7 +22,7 @@ public class DualConcurrentCachingFetcherWrapperTest {
 
             final int waitTime = 500;
 
-            final Fetcher<DualFetcherResponse<String>> fetcher = new DualConcurrentCachingFetcherWrapper<String>(new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
+            final Fetcher<FetcherResponse<String>> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
                 try {
                     Thread.sleep(waitTime);
                 }
@@ -30,10 +30,9 @@ public class DualConcurrentCachingFetcherWrapperTest {
                     Assertions.fail(e.getMessage());
                 }
                 return "first";
-            })),
-                                                                                                                 new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
-                                                                                                                     return "second";
-                                                                                                                 })));
+            }), new ConcurrentFetcherWrapper<String>(() -> {
+                return "second";
+            }));
 
             try {
                 Assert.assertEquals("second", fetcher.fetch().value());
@@ -79,12 +78,11 @@ public class DualConcurrentCachingFetcherWrapperTest {
 
         final int waitTime = 500;
 
-        final Fetcher<DualFetcherResponse<String>> fetcher = new DualConcurrentCachingFetcherWrapper<String>(new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
+        final Fetcher<FetcherResponse<String>> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
             return "second";
-        })),
-                                                                                                             new ConcurrentCachingFetcherWrapper<String>(new ConcurrentFetcherWrapper<String>(() -> {
-                                                                                                                 throw new FetcherException("faster");
-                                                                                                             })));
+        }), new ConcurrentFetcherWrapper<String>(() -> {
+            throw new FetcherException("faster");
+        }));
 
         try {
 

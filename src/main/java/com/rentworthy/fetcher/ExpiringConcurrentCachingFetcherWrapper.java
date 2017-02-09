@@ -1,6 +1,7 @@
 package com.rentworthy.fetcher;
 
 import com.rentworthy.fetcher.exception.FetcherException;
+import com.rentworthy.fetcher.response.FetcherResponse;
 
 public class ExpiringConcurrentCachingFetcherWrapper<T> extends ConcurrentCachingFetcherWrapper<T> {
 
@@ -25,11 +26,10 @@ public class ExpiringConcurrentCachingFetcherWrapper<T> extends ConcurrentCachin
     }
 
     @Override
-    public synchronized T fetch() throws FetcherException {
+    public synchronized FetcherResponse<T> fetch() throws FetcherException {
 
         if ((System.currentTimeMillis() - this.lastClearTime) >= this.maxCacheTimeMs) {
-            this.clearCachedObject();
-            this.concurrentFetcherWrapper.clearFuture();
+            this.clearFuture();
             this.lastClearTime = System.currentTimeMillis();
         }
 
