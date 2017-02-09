@@ -1,4 +1,4 @@
-# fetcher-framework [![Build Status](https://travis-ci.org/rentworthy/fetcher-framework.svg?branch=master)](https://travis-ci.org/rentworthy/fetcher-framework)
+# Fetcher [![Build Status](https://travis-ci.org/rentworthy/fetcher-framework.svg?branch=master)](https://travis-ci.org/rentworthy/fetcher-framework)
 
 Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent code designed for failure.
 
