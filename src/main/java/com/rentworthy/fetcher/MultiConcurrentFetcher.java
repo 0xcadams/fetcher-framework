@@ -21,7 +21,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
     private final static FetcherErrorCallback DEFAULT_TIMEOUT_CALLBACK = e -> {
     }; // default do nothing on timeout
 
-    private final static double DEFAULT_MAX_TIME_MS = 60 * 1000;
+    private final static double DEFAULT_MAX_TIME_MS = 10 * 1000;
 
     private final FetcherErrorCallback errorCallback;
     private final FetcherErrorCallback timeoutCallback;
