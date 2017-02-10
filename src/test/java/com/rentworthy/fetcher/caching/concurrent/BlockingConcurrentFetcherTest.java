@@ -10,14 +10,13 @@ import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
-import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class NonBlockingConcurrentFetcherWrapperTest {
+public class BlockingConcurrentFetcherTest {
 
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final Fetcher<String> fetcher = new NonBlockingConcurrentFetcherWrapper<String>(() -> "test");
+        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<String>(() -> "test");
 
         try {
             Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
@@ -35,7 +34,7 @@ public class NonBlockingConcurrentFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final Fetcher<String> fetcher = new NonBlockingConcurrentFetcherWrapper<String>(() -> null);
+        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<String>(() -> null);
 
         try {
             fetcher.fetch();
@@ -50,7 +49,7 @@ public class NonBlockingConcurrentFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new NonBlockingConcurrentFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<String>(() -> {
             throw new FetcherException(new RuntimeException());
         });
 
@@ -69,7 +68,7 @@ public class NonBlockingConcurrentFetcherWrapperTest {
 
         final int timeWait = 1000;
 
-        final Fetcher<String> fetcher = new NonBlockingConcurrentFetcherWrapper<>(() -> {
+        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<>(() -> {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming
@@ -83,11 +82,10 @@ public class NonBlockingConcurrentFetcherWrapperTest {
         });
 
         try {
-            fetcher.fetch();
-            Assert.fail();
+            Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
         }
         catch (final FetcherException e) {
-            Assertions.assertThat(e.getClass()).isEqualTo(FetcherNotReadyException.class);
+            Assert.fail();
         }
 
         try {

@@ -4,14 +4,14 @@ import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class CachingFetcherWrapper<T> implements Fetcher<T> {
+public class CachingFetcher<T> implements Fetcher<T> {
 
     private final Object lock = new Object();
     private final Fetcher<T> fetcher;
     private T prevObj;
     private volatile FetcherException prevException;
 
-    public CachingFetcherWrapper(final Fetcher<T> fetcher) {
+    public CachingFetcher(final Fetcher<T> fetcher) {
         this.fetcher = fetcher;
         this.prevObj = null;
         this.prevException = null;

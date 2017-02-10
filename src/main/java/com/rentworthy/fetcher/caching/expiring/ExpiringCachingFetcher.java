@@ -1,24 +1,24 @@
 package com.rentworthy.fetcher.caching.expiring;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
+import com.rentworthy.fetcher.caching.CachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 
-public class ExpiringCachingFetcherWrapper<T> extends CachingFetcherWrapper<T> {
+public class ExpiringCachingFetcher<T> extends CachingFetcher<T> {
 
     private static final double DEFAULT_MAX_CACHE_TIME = Double.MAX_VALUE;
     private volatile long lastClearTime;
     private final double maxCacheTime;
 
-    public ExpiringCachingFetcherWrapper(final Fetcher<T> fetcher) {
-        this(fetcher, ExpiringCachingFetcherWrapper.DEFAULT_MAX_CACHE_TIME);
+    public ExpiringCachingFetcher(final Fetcher<T> fetcher) {
+        this(fetcher, ExpiringCachingFetcher.DEFAULT_MAX_CACHE_TIME);
     }
 
-    public ExpiringCachingFetcherWrapper(final Fetcher<T> fetcher, final int maxCacheTime) {
+    public ExpiringCachingFetcher(final Fetcher<T> fetcher, final int maxCacheTime) {
         this(fetcher, (double) maxCacheTime);
     }
 
-    public ExpiringCachingFetcherWrapper(final Fetcher<T> fetcher, final double maxCacheTime) {
+    public ExpiringCachingFetcher(final Fetcher<T> fetcher, final double maxCacheTime) {
         super(fetcher);
         this.lastClearTime = System.currentTimeMillis();
         this.maxCacheTime = maxCacheTime;

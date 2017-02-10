@@ -16,14 +16,14 @@ import com.rentworthy.fetcher.concurrent.FetcherCallable;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public abstract class AbstractCachingConcurrentFetcherWrapper<T> implements Fetcher<T> {
+public abstract class AbstractCachingConcurrentFetcher<T> implements Fetcher<T> {
 
     private final static Fetcher<ExecutorService> EXECUTOR_SERVICE_FETCHER = new ExecutorServiceCachingFetcher();
 
     private final Fetcher<T> fetcher;
     private final long maxWaitNanos;
 
-    protected AbstractCachingConcurrentFetcherWrapper(final Fetcher<T> fetcher,
+    protected AbstractCachingConcurrentFetcher(final Fetcher<T> fetcher,
                                                       final long maxWaitNanos) {
         this.fetcher = fetcher;
         this.maxWaitNanos = maxWaitNanos;
@@ -35,7 +35,7 @@ public abstract class AbstractCachingConcurrentFetcherWrapper<T> implements Fetc
     public synchronized T fetch() throws FetcherException {
 
         if (this.future == null) {
-            this.future = AbstractCachingConcurrentFetcherWrapper.EXECUTOR_SERVICE_FETCHER.fetch().submit(
+            this.future = AbstractCachingConcurrentFetcher.EXECUTOR_SERVICE_FETCHER.fetch().submit(
                 new FetcherCallable<T>(this.fetcher));
         }
 

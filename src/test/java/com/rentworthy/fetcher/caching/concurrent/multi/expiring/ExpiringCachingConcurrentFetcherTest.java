@@ -14,13 +14,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.MultiFetcherValueWrapper;
-import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
+import com.rentworthy.fetcher.MultiFetcherValue;
+import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class ExpiringCachingConcurrentFetcherWrapperTest {
+public class ExpiringCachingConcurrentFetcherTest {
 
     @Test
     public void testExpiringConcurrentCachingFetcherWrapper() {
@@ -29,7 +29,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
+        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet()),
                                                                                                                             maxTimeMs));
 
         try {
@@ -74,7 +74,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet())));
+        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet())));
 
         try {
 
@@ -118,7 +118,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet())));
+        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet())));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 
@@ -197,7 +197,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
+        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet()),
                                                                                                                      maxTimeMs));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();

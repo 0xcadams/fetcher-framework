@@ -1,26 +1,26 @@
 package com.rentworthy.fetcher.caching.concurrent.multi.expiring;
 
-import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
-import com.rentworthy.fetcher.caching.concurrent.multi.CachingNonBlockingConcurrentFetcherWrapper;
+import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
+import com.rentworthy.fetcher.caching.concurrent.multi.CachingNonBlockingConcurrentFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
 
-public class ExpiringCachingConcurrentFetcherWrapper<T> extends CachingNonBlockingConcurrentFetcherWrapper<T> {
+public class ExpiringCachingConcurrentFetcher<T> extends CachingNonBlockingConcurrentFetcher<T> {
 
     private static final double DEFAULT_MAX_CACHE_TIME = Double.MAX_VALUE;
     private volatile long lastClearTime;
     private final double maxCacheTimeMs;
 
-    public ExpiringCachingConcurrentFetcherWrapper(final NonBlockingConcurrentFetcherWrapper<T> fetcher) {
-        this(fetcher, ExpiringCachingConcurrentFetcherWrapper.DEFAULT_MAX_CACHE_TIME);
+    public ExpiringCachingConcurrentFetcher(final NonBlockingConcurrentFetcher<T> fetcher) {
+        this(fetcher, ExpiringCachingConcurrentFetcher.DEFAULT_MAX_CACHE_TIME);
     }
 
-    public ExpiringCachingConcurrentFetcherWrapper(final NonBlockingConcurrentFetcherWrapper<T> fetcher,
+    public ExpiringCachingConcurrentFetcher(final NonBlockingConcurrentFetcher<T> fetcher,
                                                    final int maxCacheTimeMs) {
         this(fetcher, (double) maxCacheTimeMs);
     }
 
-    public ExpiringCachingConcurrentFetcherWrapper(final NonBlockingConcurrentFetcherWrapper<T> fetcher,
+    public ExpiringCachingConcurrentFetcher(final NonBlockingConcurrentFetcher<T> fetcher,
                                                    final double maxCacheTimeMs) {
         super(fetcher);
         this.lastClearTime = System.currentTimeMillis();

@@ -1,7 +1,7 @@
 package com.rentworthy.fetcher;
 
-import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
-import com.rentworthy.fetcher.caching.concurrent.multi.CachingNonBlockingConcurrentFetcherWrapper;
+import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
+import com.rentworthy.fetcher.caching.concurrent.multi.CachingNonBlockingConcurrentFetcher;
 
 public class FetcherBuilder<T> implements Builder<T> {
 
@@ -35,7 +35,7 @@ public class FetcherBuilder<T> implements Builder<T> {
     public final Fetcher<T> build(final Fetcher<T>... fetcher) {
 
         if (this.concurrent && !this.source && (this.expiring == -1) && (fetcher.length == 1)) {
-            return new MultiFetcherValueWrapper<T>(new CachingNonBlockingConcurrentFetcherWrapper<T>(new NonBlockingConcurrentFetcherWrapper<T>(fetcher[0])));
+            return new MultiFetcherValue<T>(new CachingNonBlockingConcurrentFetcher<T>(new NonBlockingConcurrentFetcher<T>(fetcher[0])));
         }
 
         return null;

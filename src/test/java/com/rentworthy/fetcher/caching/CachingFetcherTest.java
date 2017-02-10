@@ -13,12 +13,12 @@ import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 
-public class CachingFetcherWrapperTest {
+public class CachingFetcherTest {
 
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> "test");
+        final Fetcher<String> fetcher = new CachingFetcher<String>(() -> "test");
 
         try {
             Assert.assertEquals("test", fetcher.fetch());
@@ -37,7 +37,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> null);
+        final Fetcher<String> fetcher = new CachingFetcher<String>(() -> null);
 
         try {
             fetcher.fetch();
@@ -52,7 +52,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullPointerExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(new Fetcher<String>() {
+        final Fetcher<String> fetcher = new CachingFetcher<String>(new Fetcher<String>() {
 
             @SuppressWarnings ("null")
             @Override
@@ -77,7 +77,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = new CachingFetcher<String>(() -> {
             throw new FetcherException(new NullPointerException());
         });
 
@@ -96,7 +96,7 @@ public class CachingFetcherWrapperTest {
 
         final int timeWait = 300;
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = new CachingFetcher<String>(() -> {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming
@@ -137,7 +137,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = new CachingFetcher<String>(() -> {
             throw new FetcherException(new NullPointerException());
         });
 
@@ -165,7 +165,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingMultiThreadedFetcherClearObjWrapperTest() {
 
-        final CachingFetcherWrapper<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final CachingFetcher<String> fetcher = new CachingFetcher<String>(() -> {
             return "test_ret";
         });
 

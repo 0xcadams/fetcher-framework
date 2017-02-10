@@ -13,14 +13,14 @@ import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 
-public class ExpiringCachingFetcherWrapperTest {
+public class ExpiringCachingFetcherTest {
 
     @Test
     public void testNeverExpiringCachingFetcherWrapper() {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcherWrapper<>(() -> count.incrementAndGet());
+        final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcher<>(() -> count.incrementAndGet());
 
         try {
 
@@ -42,7 +42,7 @@ public class ExpiringCachingFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcherWrapper<>((Fetcher<Integer>) () -> count.incrementAndGet(),
+        final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcher<>((Fetcher<Integer>) () -> count.incrementAndGet(),
                                                                                     50);
 
         try {
@@ -76,7 +76,7 @@ public class ExpiringCachingFetcherWrapperTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new ExpiringCachingFetcherWrapper<>((Fetcher<Integer>) () -> count.incrementAndGet(),
+        final Fetcher<Integer> expire = new ExpiringCachingFetcher<>((Fetcher<Integer>) () -> count.incrementAndGet(),
                                                                             maxTimeMs);
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();

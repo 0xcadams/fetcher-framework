@@ -4,32 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rentworthy.fetcher.MultiFetcher;
-import com.rentworthy.fetcher.caching.CachingFetcherWrapper;
+import com.rentworthy.fetcher.caching.CachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
 import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
-public class WaterfallCachingFetcherWrapper<T> implements MultiFetcher<T> {
+public class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> e.printStackTrace();
 
     private final FetcherErrorCallback errorCallback;
 
-    private final List<CachingFetcherWrapper<T>> fetchers;
+    private final List<CachingFetcher<T>> fetchers;
 
     @SafeVarargs
-    public WaterfallCachingFetcherWrapper(final CachingFetcherWrapper<T>... fetchers) {
-        this(WaterfallCachingFetcherWrapper.DEFAULT_ERROR_CALLBACK, fetchers);
+    public WaterfallCachingFetcher(final CachingFetcher<T>... fetchers) {
+        this(WaterfallCachingFetcher.DEFAULT_ERROR_CALLBACK, fetchers);
     }
 
     @SafeVarargs
-    public WaterfallCachingFetcherWrapper(final FetcherErrorCallback errorCallback,
-                                          final CachingFetcherWrapper<T>... fetchers) {
+    public WaterfallCachingFetcher(final FetcherErrorCallback errorCallback,
+                                          final CachingFetcher<T>... fetchers) {
 
         this.fetchers = new ArrayList<>();
 
-        for (final CachingFetcherWrapper<T> fetcher : fetchers) {
+        for (final CachingFetcher<T> fetcher : fetchers) {
             this.fetchers.add(fetcher);
         }
 
@@ -46,7 +46,7 @@ public class WaterfallCachingFetcherWrapper<T> implements MultiFetcher<T> {
 
         for (int i = 0; i < (this.fetchers.size() - 1); i++) {
 
-            final CachingFetcherWrapper<T> fetcher = this.fetchers.get(i);
+            final CachingFetcher<T> fetcher = this.fetchers.get(i);
 
             try {
                 return FetcherResponseFactory.getFetcherResponse(i + 1, fetcher.fetch());

@@ -9,14 +9,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.MultiFetcher;
-import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcherWrapper;
+import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.source.UnlimitedSource;
 
-public class DualConcurrentCachingFetcherWrapperTest {
+public class DualConcurrentCachingFetcherTest {
 
     @Test
-    public void testDualConcurrentCachingFetcherWrapper() {
+    public void testDualConcurrentCachingFetcher() {
 
         final int numRuns = 1;
 
@@ -24,7 +24,7 @@ public class DualConcurrentCachingFetcherWrapperTest {
 
             final int waitTime = 500;
 
-            final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<String>(new NonBlockingConcurrentFetcherWrapper<String>(() -> {
+            final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<String>(() -> {
                 try {
                     Thread.sleep(waitTime);
                 }
@@ -32,7 +32,7 @@ public class DualConcurrentCachingFetcherWrapperTest {
                     Assertions.fail(e.getMessage());
                 }
                 return "first";
-            }), new NonBlockingConcurrentFetcherWrapper<String>(() -> {
+            }), new NonBlockingConcurrentFetcher<String>(() -> {
                 return "second";
             }));
 
@@ -79,13 +79,13 @@ public class DualConcurrentCachingFetcherWrapperTest {
     }
 
     @Test
-    public void testDualConcurrentCachingFetcherWrapperFasterFailing() {
+    public void testDualConcurrentCachingFetcherFasterFailing() {
 
         final int waitTime = 500;
 
-        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<String>(new NonBlockingConcurrentFetcherWrapper<String>(() -> {
+        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<String>(() -> {
             return "second";
-        }), new NonBlockingConcurrentFetcherWrapper<String>(() -> {
+        }), new NonBlockingConcurrentFetcher<String>(() -> {
             throw new FetcherException("faster");
         }));
 
