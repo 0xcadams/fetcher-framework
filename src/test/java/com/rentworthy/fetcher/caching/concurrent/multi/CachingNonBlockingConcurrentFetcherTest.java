@@ -13,6 +13,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.rentworthy.fetcher.Fetcher;
+import com.rentworthy.fetcher.FetcherFactory;
 import com.rentworthy.fetcher.MultiFetcher;
 import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
@@ -24,14 +26,15 @@ public class CachingNonBlockingConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<>(() -> "test"));
+        final Fetcher<String> fetcher = FetcherFactory.getCachingNonBlockingConcurrentFetcher(
+            () -> "test");
 
         try {
-            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
-            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
-            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
-            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
-            Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+            Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
         }
         catch (final FetcherException e) {
             Assert.fail();
@@ -58,9 +61,9 @@ public class CachingNonBlockingConcurrentFetcherTest {
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
         final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<>(10,
-                                                                                              new NonBlockingConcurrentFetcher<>(() -> {
-                                                                                                  throw new FetcherException(new RuntimeException());
-                                                                                              }));
+                                                                                       new NonBlockingConcurrentFetcher<>(() -> {
+                                                                                           throw new FetcherException(new RuntimeException());
+                                                                                       }));
 
         try {
             fetcher.fetch();
@@ -124,9 +127,9 @@ public class CachingNonBlockingConcurrentFetcherTest {
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
         final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<>(10,
-                                                                                              new NonBlockingConcurrentFetcher<>(() -> {
-                                                                                                  throw new FetcherException(new RuntimeException());
-                                                                                              }));
+                                                                                       new NonBlockingConcurrentFetcher<>(() -> {
+                                                                                           throw new FetcherException(new RuntimeException());
+                                                                                       }));
 
         try {
             fetcher.fetch();

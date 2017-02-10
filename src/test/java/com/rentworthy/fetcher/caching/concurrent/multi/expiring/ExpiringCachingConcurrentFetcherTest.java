@@ -30,7 +30,7 @@ public class ExpiringCachingConcurrentFetcherTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet()),
-                                                                                                                            maxTimeMs));
+                                                                                                              maxTimeMs));
 
         try {
 
@@ -198,7 +198,7 @@ public class ExpiringCachingConcurrentFetcherTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet()),
-                                                                                                                     maxTimeMs));
+                                                                                                       maxTimeMs));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 

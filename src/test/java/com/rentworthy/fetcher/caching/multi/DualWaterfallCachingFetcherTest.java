@@ -14,10 +14,10 @@ public class DualWaterfallCachingFetcherTest {
     public void dualWaterfallCachingFetcherTest() {
 
         final MultiFetcher<String> fetcher = new WaterfallCachingFetcher<String>(e -> Assert.fail(),
-                                                                                        new CachingFetcher<String>(() -> "test"),
-                                                                                        new CachingFetcher<String>(() -> {
-                                                                                            throw new FetcherException("should never reach here!");
-                                                                                        }));
+                                                                                 new CachingFetcher<String>(() -> "test"),
+                                                                                 new CachingFetcher<String>(() -> {
+                                                                                     throw new FetcherException("should never reach here!");
+                                                                                 }));
 
         try {
             Assert.assertEquals("test", fetcher.fetch().value());
@@ -37,10 +37,9 @@ public class DualWaterfallCachingFetcherTest {
     public void dualWaterfallCachingFetcherBackupTest() {
 
         final MultiFetcher<String> fetcher = new WaterfallCachingFetcher<String>(e -> Assertions.assertThat(
-            e.getMessage()).contains(
-                "should never reach here!"), new CachingFetcher<String>(() -> {
-                    throw new FetcherException("should never reach here!");
-                }), new CachingFetcher<String>(() -> "test"));
+            e.getMessage()).contains("should never reach here!"), new CachingFetcher<String>(() -> {
+                throw new FetcherException("should never reach here!");
+            }), new CachingFetcher<String>(() -> "test"));
 
         try {
             Assert.assertEquals("test", fetcher.fetch().value());
@@ -60,12 +59,11 @@ public class DualWaterfallCachingFetcherTest {
     public void dualWaterfallCachingFetcherAllFailingTest() {
 
         final MultiFetcher<String> fetcher = new WaterfallCachingFetcher<String>(e -> Assertions.assertThat(
-            e.getMessage()).contains(
-                "should never reach here!"), new CachingFetcher<String>(() -> {
-                    throw new FetcherException("should never reach here!");
-                }), new CachingFetcher<String>(() -> {
-                    throw new FetcherException("should reach here!");
-                }));
+            e.getMessage()).contains("should never reach here!"), new CachingFetcher<String>(() -> {
+                throw new FetcherException("should never reach here!");
+            }), new CachingFetcher<String>(() -> {
+                throw new FetcherException("should reach here!");
+            }));
 
         try {
             fetcher.fetch().value();
@@ -81,19 +79,18 @@ public class DualWaterfallCachingFetcherTest {
     public void dualWaterfallCachingFetcherTimingTest() {
 
         final MultiFetcher<String> fetcher = new WaterfallCachingFetcher<String>(e -> Assertions.assertThat(
-            e.getMessage()).contains(
-                "should never reach here!"), new CachingFetcher<String>(() -> {
+            e.getMessage()).contains("should never reach here!"), new CachingFetcher<String>(() -> {
 
-                    try {
-                        Thread.sleep(1000);
-                    }
-                    catch (final InterruptedException e) {
-                        throw new FetcherException(e);
-                    }
+                try {
+                    Thread.sleep(1000);
+                }
+                catch (final InterruptedException e) {
+                    throw new FetcherException(e);
+                }
 
-                    throw new FetcherException("should never reach here!");
+                throw new FetcherException("should never reach here!");
 
-                }), new CachingFetcher<String>(() -> "test"));
+            }), new CachingFetcher<String>(() -> "test"));
 
         try {
 
@@ -118,24 +115,23 @@ public class DualWaterfallCachingFetcherTest {
     public void dualWaterfallCachingFetcherTimingBackupTest() {
 
         final MultiFetcher<String> fetcher = new WaterfallCachingFetcher<String>(e -> Assertions.assertThat(
-            e.getMessage()).contains(
-                "should never reach here!"), new CachingFetcher<String>(() -> {
+            e.getMessage()).contains("should never reach here!"), new CachingFetcher<String>(() -> {
 
-                    try {
-                        Thread.sleep(1000);
-                    }
-                    catch (final InterruptedException e) {
-                        throw new FetcherException(e);
-                    }
+                try {
+                    Thread.sleep(1000);
+                }
+                catch (final InterruptedException e) {
+                    throw new FetcherException(e);
+                }
 
-                    return "test";
+                return "test";
 
-                }), new CachingFetcher<String>(() -> {
+            }), new CachingFetcher<String>(() -> {
 
-                    Assert.fail();
-                    return "";
+                Assert.fail();
+                return "";
 
-                }));
+            }));
 
         try {
 

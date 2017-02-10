@@ -16,12 +16,12 @@ public class ExpiringCachingConcurrentFetcher<T> extends CachingNonBlockingConcu
     }
 
     public ExpiringCachingConcurrentFetcher(final NonBlockingConcurrentFetcher<T> fetcher,
-                                                   final int maxCacheTimeMs) {
+                                            final int maxCacheTimeMs) {
         this(fetcher, (double) maxCacheTimeMs);
     }
 
     public ExpiringCachingConcurrentFetcher(final NonBlockingConcurrentFetcher<T> fetcher,
-                                                   final double maxCacheTimeMs) {
+                                            final double maxCacheTimeMs) {
         super(fetcher);
         this.lastClearTime = System.currentTimeMillis();
         this.maxCacheTimeMs = maxCacheTimeMs;

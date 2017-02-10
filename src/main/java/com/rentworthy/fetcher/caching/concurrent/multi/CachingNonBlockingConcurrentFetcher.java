@@ -5,6 +5,7 @@
 package com.rentworthy.fetcher.caching.concurrent.multi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.rentworthy.fetcher.MultiFetcher;
@@ -30,7 +31,7 @@ public class CachingNonBlockingConcurrentFetcher<T> implements MultiFetcher<T> {
 
     private final double maxTimeMs;
 
-    private final List<AbstractCachingConcurrentFetcher<T>> fetchers;
+    private final List<NonBlockingConcurrentFetcher<T>> fetchers;
 
     @SafeVarargs
     public CachingNonBlockingConcurrentFetcher(final NonBlockingConcurrentFetcher<T>... fetchers) {
@@ -42,7 +43,7 @@ public class CachingNonBlockingConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public CachingNonBlockingConcurrentFetcher(final int maxTimeMs,
-                                                      final NonBlockingConcurrentFetcher<T>... fetchers) {
+                                               final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(CachingNonBlockingConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
              CachingNonBlockingConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
              maxTimeMs,
@@ -51,13 +52,27 @@ public class CachingNonBlockingConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public CachingNonBlockingConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                                      final FetcherErrorCallback timeoutCallback,
-                                                      final double maxTimeMs,
-                                                      final NonBlockingConcurrentFetcher<T>... fetchers) {
+                                               final FetcherErrorCallback timeoutCallback,
+                                               final double maxTimeMs,
+                                               final NonBlockingConcurrentFetcher<T>... fetchers) {
+        this(errorCallback, timeoutCallback, maxTimeMs, Arrays.asList(fetchers));
+    }
+
+    public CachingNonBlockingConcurrentFetcher(final List<NonBlockingConcurrentFetcher<T>> fetchers) {
+        this(CachingNonBlockingConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
+             CachingNonBlockingConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
+             CachingNonBlockingConcurrentFetcher.DEFAULT_MAX_TIME_MS,
+             fetchers);
+    }
+
+    public CachingNonBlockingConcurrentFetcher(final FetcherErrorCallback errorCallback,
+                                               final FetcherErrorCallback timeoutCallback,
+                                               final double maxTimeMs,
+                                               final List<NonBlockingConcurrentFetcher<T>> fetchers) {
 
         this.fetchers = new ArrayList<>();
 
-        for (final AbstractCachingConcurrentFetcher<T> fetcher : fetchers) {
+        for (final NonBlockingConcurrentFetcher<T> fetcher : fetchers) {
             this.fetchers.add(fetcher);
         }
 

@@ -23,8 +23,7 @@ public abstract class AbstractCachingConcurrentFetcher<T> implements Fetcher<T> 
     private final Fetcher<T> fetcher;
     private final long maxWaitNanos;
 
-    protected AbstractCachingConcurrentFetcher(final Fetcher<T> fetcher,
-                                                      final long maxWaitNanos) {
+    protected AbstractCachingConcurrentFetcher(final Fetcher<T> fetcher, final long maxWaitNanos) {
         this.fetcher = fetcher;
         this.maxWaitNanos = maxWaitNanos;
     }

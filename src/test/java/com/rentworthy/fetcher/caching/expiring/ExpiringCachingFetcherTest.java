@@ -43,7 +43,7 @@ public class ExpiringCachingFetcherTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcher<>((Fetcher<Integer>) () -> count.incrementAndGet(),
-                                                                                    50);
+                                                                             50);
 
         try {
 
@@ -77,7 +77,7 @@ public class ExpiringCachingFetcherTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> expire = new ExpiringCachingFetcher<>((Fetcher<Integer>) () -> count.incrementAndGet(),
-                                                                            maxTimeMs);
+                                                                     maxTimeMs);
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 

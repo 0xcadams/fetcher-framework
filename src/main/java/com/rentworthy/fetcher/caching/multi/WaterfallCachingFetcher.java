@@ -25,7 +25,7 @@ public class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public WaterfallCachingFetcher(final FetcherErrorCallback errorCallback,
-                                          final CachingFetcher<T>... fetchers) {
+                                   final CachingFetcher<T>... fetchers) {
 
         this.fetchers = new ArrayList<>();
 
