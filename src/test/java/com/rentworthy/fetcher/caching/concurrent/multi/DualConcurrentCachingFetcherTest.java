@@ -24,7 +24,7 @@ public class DualConcurrentCachingFetcherTest {
 
             final int waitTime = 500;
 
-            final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<String>(() -> {
+            final MultiFetcher<String> fetcher = new MultiConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<String>(() -> {
                 try {
                     Thread.sleep(waitTime);
                 }
@@ -83,7 +83,7 @@ public class DualConcurrentCachingFetcherTest {
 
         final int waitTime = 500;
 
-        final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<String>(() -> {
+        final MultiFetcher<String> fetcher = new MultiConcurrentFetcher<String>(new NonBlockingConcurrentFetcher<String>(() -> {
             return "second";
         }), new NonBlockingConcurrentFetcher<String>(() -> {
             throw new FetcherException("faster");

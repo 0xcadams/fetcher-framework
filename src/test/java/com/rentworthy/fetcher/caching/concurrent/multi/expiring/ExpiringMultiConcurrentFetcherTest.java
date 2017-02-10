@@ -14,13 +14,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
+import com.rentworthy.fetcher.FetcherFactory;
 import com.rentworthy.fetcher.MultiFetcherValue;
 import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
 import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class ExpiringCachingConcurrentFetcherTest {
+public class ExpiringMultiConcurrentFetcherTest {
 
     @Test
     public void testExpiringConcurrentCachingFetcherWrapper() {
@@ -29,8 +30,8 @@ public class ExpiringCachingConcurrentFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet()),
-                                                                                                              maxTimeMs));
+        final Fetcher<Integer> expire = FetcherFactory.getExpiringMultiConcurrentFetcher(maxTimeMs,
+            () -> count.incrementAndGet());
 
         try {
 
@@ -74,7 +75,8 @@ public class ExpiringCachingConcurrentFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet())));
+        final Fetcher<Integer> expire = FetcherFactory.getNeverExpiringMultiConcurrentFetcher(
+            () -> count.incrementAndGet());
 
         try {
 
@@ -118,7 +120,7 @@ public class ExpiringCachingConcurrentFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet())));
+        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringMultiConcurrentFetcher<Integer>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet())));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 
@@ -197,8 +199,8 @@ public class ExpiringCachingConcurrentFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new MultiFetcherValue<>(new ExpiringCachingConcurrentFetcher<>(new NonBlockingConcurrentFetcher<>(() -> count.incrementAndGet()),
-                                                                                                       maxTimeMs));
+        final Fetcher<Integer> expire = FetcherFactory.getExpiringMultiConcurrentFetcher(maxTimeMs,
+            () -> count.incrementAndGet());
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 
