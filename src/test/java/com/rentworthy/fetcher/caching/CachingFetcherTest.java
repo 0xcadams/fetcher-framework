@@ -10,15 +10,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
+import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.caching.concurrent.TestExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 
-public class CachingFetcherWrapperTest {
+public class CachingFetcherTest {
 
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> "test");
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(() -> "test");
 
         try {
             Assert.assertEquals("test", fetcher.fetch());
@@ -37,7 +38,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> null);
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(() -> null);
 
         try {
             fetcher.fetch();
@@ -52,7 +53,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperNullPointerExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(new Fetcher<String>() {
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(new Fetcher<String>() {
 
             @SuppressWarnings ("null")
             @Override
@@ -77,7 +78,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(() -> {
             throw new FetcherException(new NullPointerException());
         });
 
@@ -96,7 +97,7 @@ public class CachingFetcherWrapperTest {
 
         final int timeWait = 300;
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(() -> {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming
@@ -137,7 +138,7 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(() -> {
             throw new FetcherException(new NullPointerException());
         });
 
@@ -165,13 +166,13 @@ public class CachingFetcherWrapperTest {
     @Test
     public void cachingMultiThreadedFetcherClearObjWrapperTest() {
 
-        final CachingFetcherWrapper<String> fetcher = new CachingFetcherWrapper<String>(() -> {
+        final Fetcher<String> fetcher = FetcherFactory.getCachingFetcher(() -> {
             return "test_ret";
         });
 
         final List<Future<String>> futures = new ArrayList<>();
 
-        final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
+        final TestExecutorServiceCachingFetcher exec = new TestExecutorServiceCachingFetcher();
 
         for (int i = 0; i < 1000000; i++) {
 
@@ -192,13 +193,12 @@ public class CachingFetcherWrapperTest {
                         Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
                         Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
                         Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
                         Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
                         Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
                         Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.clearCachedObject()).isEqualTo(true);
+                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
+                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
 
                     }
                     catch (final FetcherException e) {

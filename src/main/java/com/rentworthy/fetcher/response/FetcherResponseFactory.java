@@ -1,6 +1,6 @@
 /**
- * @author  cadams2
- * @since   Feb 9, 2017
+ * @author cadams2
+ * @since Feb 9, 2017
  */
 package com.rentworthy.fetcher.response;
 
@@ -27,22 +27,23 @@ public class FetcherResponseFactory<S> {
 
     }
 
-//    public static <S> FetcherResponse<S> getSingleFetcherResponse(final S value) {
-//
-//        return new FetcherResponse<S>() {
-//
-//            @Override
-//            public Source source() throws SingleFetcherException {
-//                throw new SingleFetcherException("Single fetcher response!");
-//            }
-//
-//            @Override
-//            public S value() {
-//                return value;
-//            }
-//
-//        };
-//
-//    }
+    // public static <S> FetcherResponse<S> getSingleFetcherResponse(final S
+    // value) {
+    //
+    // return new FetcherResponse<S>() {
+    //
+    // @Override
+    // public Source source() throws SingleFetcherException {
+    // throw new SingleFetcherException("Single fetcher response!");
+    // }
+    //
+    // @Override
+    // public S value() {
+    // return value;
+    // }
+    //
+    // };
+    //
+    // }
 
 }
