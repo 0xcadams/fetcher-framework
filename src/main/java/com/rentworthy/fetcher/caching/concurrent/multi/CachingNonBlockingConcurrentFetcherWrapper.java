@@ -34,18 +34,26 @@ public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetch
 
     @SafeVarargs
     public CachingNonBlockingConcurrentFetcherWrapper(final NonBlockingConcurrentFetcherWrapper<T>... fetchers) {
-        this(CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_ERROR_CALLBACK, CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_TIMEOUT_CALLBACK,
-                CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_MAX_TIME_MS, fetchers);
+        this(CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_ERROR_CALLBACK,
+             CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_TIMEOUT_CALLBACK,
+             CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_MAX_TIME_MS,
+             fetchers);
     }
 
     @SafeVarargs
-    public CachingNonBlockingConcurrentFetcherWrapper(int maxTimeMs, final NonBlockingConcurrentFetcherWrapper<T>... fetchers) {
-        this(CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_ERROR_CALLBACK, CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_TIMEOUT_CALLBACK, maxTimeMs, fetchers);
+    public CachingNonBlockingConcurrentFetcherWrapper(final int maxTimeMs,
+                                                      final NonBlockingConcurrentFetcherWrapper<T>... fetchers) {
+        this(CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_ERROR_CALLBACK,
+             CachingNonBlockingConcurrentFetcherWrapper.DEFAULT_TIMEOUT_CALLBACK,
+             maxTimeMs,
+             fetchers);
     }
 
     @SafeVarargs
-    public CachingNonBlockingConcurrentFetcherWrapper(final FetcherErrorCallback errorCallback, final FetcherErrorCallback timeoutCallback, final double maxTimeMs,
-            final NonBlockingConcurrentFetcherWrapper<T>... fetchers) {
+    public CachingNonBlockingConcurrentFetcherWrapper(final FetcherErrorCallback errorCallback,
+                                                      final FetcherErrorCallback timeoutCallback,
+                                                      final double maxTimeMs,
+                                                      final NonBlockingConcurrentFetcherWrapper<T>... fetchers) {
 
         this.fetchers = new ArrayList<>();
 
@@ -66,25 +74,23 @@ public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetch
             throw new FetcherException("Number of fetchers was zero!");
         }
 
-        if (this.fetchers.size() == 0) {
-            throw new FetcherException("Number of fetchers was zero!");
-        }
-
         final long startTime = System.currentTimeMillis();
 
-        while ((System.currentTimeMillis() - startTime) < maxTimeMs) {
+        while ((System.currentTimeMillis() - startTime) < this.maxTimeMs) {
 
             for (int i = 0; i < this.fetchers.size(); i++) { // loop through all
-                                                                 // fetchers
+                                                             // fetchers
 
                 final AbstractCachingConcurrentFetcherWrapper<T> fetcher = this.fetchers.get(i);
 
                 try {
                     return FetcherResponseFactory.getFetcherResponse(i + 1, fetcher.fetch());
-                } catch (final FetcherException e) {
+                }
+                catch (final FetcherException e) {
                     if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
                         this.errorCallback.onError(e);
-                    } else {
+                    }
+                    else {
                         this.timeoutCallback.onError(e);
                     }
                 }
@@ -93,7 +99,8 @@ public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetch
 
         }
 
-        return FetcherResponseFactory.getFetcherResponse(fetchers.size(), fetchers.get(fetchers.size() - 1).fetch());
+        return FetcherResponseFactory.getFetcherResponse(this.fetchers.size(),
+            this.fetchers.get(this.fetchers.size() - 1).fetch());
 
     }
 
@@ -113,7 +120,7 @@ public class CachingNonBlockingConcurrentFetcherWrapper<T> implements MultiFetch
 
         boolean cleared = true;
 
-        for (AbstractCachingConcurrentFetcherWrapper<T> fetcherWrapper : fetchers) {
+        for (final AbstractCachingConcurrentFetcherWrapper<T> fetcherWrapper : this.fetchers) {
             cleared = cleared && fetcherWrapper.clearFuture();
             ;
         }

@@ -1,6 +1,6 @@
 /**
- * @author  cadams2
- * @since   Feb 9, 2017
+ * @author cadams2
+ * @since Feb 9, 2017
  */
 package com.rentworthy.fetcher;
 

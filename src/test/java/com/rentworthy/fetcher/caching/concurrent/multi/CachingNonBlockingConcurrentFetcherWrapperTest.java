@@ -4,9 +4,6 @@
  */
 package com.rentworthy.fetcher.caching.concurrent.multi;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -49,10 +46,10 @@ public class CachingNonBlockingConcurrentFetcherWrapperTest {
 
         try {
             fetcher.fetch().value();
-            assertThat(fetcher.fetch().value()).isNull();
+            Assertions.assertThat(fetcher.fetch().value()).isNull();
         }
         catch (final FetcherException e) {
-            fail();
+            Assert.fail();
         }
 
     }
@@ -61,9 +58,9 @@ public class CachingNonBlockingConcurrentFetcherWrapperTest {
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
         final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<>(10,
-                                                                                                      new NonBlockingConcurrentFetcherWrapper<>(() -> {
-                                                                                                          throw new FetcherException(new RuntimeException());
-                                                                                                      }));
+                                                                                              new NonBlockingConcurrentFetcherWrapper<>(() -> {
+                                                                                                  throw new FetcherException(new RuntimeException());
+                                                                                              }));
 
         try {
             fetcher.fetch();
@@ -127,9 +124,9 @@ public class CachingNonBlockingConcurrentFetcherWrapperTest {
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
         final MultiFetcher<String> fetcher = new CachingNonBlockingConcurrentFetcherWrapper<>(10,
-                                                                                                      new NonBlockingConcurrentFetcherWrapper<>(() -> {
-                                                                                                          throw new FetcherException(new RuntimeException());
-                                                                                                      }));
+                                                                                              new NonBlockingConcurrentFetcherWrapper<>(() -> {
+                                                                                                  throw new FetcherException(new RuntimeException());
+                                                                                              }));
 
         try {
             fetcher.fetch();

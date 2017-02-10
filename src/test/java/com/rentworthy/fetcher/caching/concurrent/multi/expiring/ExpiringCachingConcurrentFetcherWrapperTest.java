@@ -30,7 +30,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<Integer>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
-                                                                                                              maxTimeMs));
+                                                                                                                            maxTimeMs));
 
         try {
 
@@ -96,7 +96,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
             Assertions.assertThat(expire.fetch()).isEqualTo(1);
             Assertions.assertThat(expire.fetch()).isEqualTo(1);
             Assertions.assertThat(expire.fetch()).isEqualTo(1);
-            
+
             Thread.sleep(waitTimeMs * 5);
 
             Assertions.assertThat(expire.fetch()).isEqualTo(1);
@@ -198,7 +198,7 @@ public class ExpiringCachingConcurrentFetcherWrapperTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> expire = new MultiFetcherValueWrapper<>(new ExpiringCachingConcurrentFetcherWrapper<>(new NonBlockingConcurrentFetcherWrapper<>(() -> count.incrementAndGet()),
-                                                                                                              maxTimeMs));
+                                                                                                                     maxTimeMs));
 
         final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
 

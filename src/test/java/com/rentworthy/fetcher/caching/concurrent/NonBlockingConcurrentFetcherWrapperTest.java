@@ -4,9 +4,6 @@
  */
 package com.rentworthy.fetcher.caching.concurrent;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +25,8 @@ public class NonBlockingConcurrentFetcherWrapperTest {
             Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
             Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
             Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
-        } catch (final FetcherException e) {
+        }
+        catch (final FetcherException e) {
             Assert.fail();
         }
 
@@ -41,9 +39,10 @@ public class NonBlockingConcurrentFetcherWrapperTest {
 
         try {
             fetcher.fetch();
-            assertThat(fetcher.fetch()).isNull();
-        } catch (final FetcherException e) {
-            fail();
+            Assertions.assertThat(fetcher.fetch()).isNull();
+        }
+        catch (final FetcherException e) {
+            Assert.fail();
         }
 
     }
@@ -58,7 +57,8 @@ public class NonBlockingConcurrentFetcherWrapperTest {
         try {
             fetcher.fetch();
             Assert.fail();
-        } catch (final FetcherException e) {
+        }
+        catch (final FetcherException e) {
             Assert.assertEquals(e.getCause().getCause().getClass(), FetcherException.class);
         }
 
@@ -73,7 +73,8 @@ public class NonBlockingConcurrentFetcherWrapperTest {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming
-            } catch (final InterruptedException e) {
+            }
+            catch (final InterruptedException e) {
                 throw new FetcherException(e);
             }
 
@@ -84,13 +85,15 @@ public class NonBlockingConcurrentFetcherWrapperTest {
         try {
             fetcher.fetch();
             Assert.fail();
-        } catch (final FetcherException e) {
-            assertThat(e.getClass()).isEqualTo(FetcherNotReadyException.class);
+        }
+        catch (final FetcherException e) {
+            Assertions.assertThat(e.getClass()).isEqualTo(FetcherNotReadyException.class);
         }
 
         try {
             Thread.sleep(timeWait + 50); // do something time-consuming
-        } catch (final InterruptedException e) {
+        }
+        catch (final InterruptedException e) {
             Assertions.fail(e.getMessage());
         }
 
@@ -103,112 +106,117 @@ public class NonBlockingConcurrentFetcherWrapperTest {
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
             Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
 
-        } catch (final FetcherException e) {
+        }
+        catch (final FetcherException e) {
             e.printStackTrace();
             Assert.fail();
         }
 
     }
 
-    //    @Test
-    //    public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
+    // @Test
+    // public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
     //
-    //        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<>(10,
-    //                                                                                                      new ImmediateConcurrentFetcherWrapper<>(() -> {
-    //                                                                                                          throw new FetcherException(new RuntimeException());
-    //                                                                                                      }));
+    // final ConcurrentCachingFetcherWrapper<String> fetcher = new
+    // ConcurrentCachingFetcherWrapper<>(10,
+    // new ImmediateConcurrentFetcherWrapper<>(() -> {
+    // throw new FetcherException(new RuntimeException());
+    // }));
     //
-    //        try {
-    //            fetcher.fetch();
-    //            Assert.fail();
-    //        }
-    //        catch (final FetcherException e) {
+    // try {
+    // fetcher.fetch();
+    // Assert.fail();
+    // }
+    // catch (final FetcherException e) {
     //
-    //            // System.o
+    // // System.o
     //
-    //            Assert.assertEquals(e.getCause().getCause().getCause().getClass(),
-    //                RuntimeException.class);
+    // Assert.assertEquals(e.getCause().getCause().getCause().getClass(),
+    // RuntimeException.class);
     //
-    //            try {
-    //                fetcher.fetch();
-    //                Assert.fail();
-    //            }
-    //            catch (final FetcherException e1) {
-    //                Assert.assertEquals(e.getClass(), e1.getClass());
-    //                Assert.assertEquals(e.getCause().getClass(), e1.getCause().getClass());
-    //            }
+    // try {
+    // fetcher.fetch();
+    // Assert.fail();
+    // }
+    // catch (final FetcherException e1) {
+    // Assert.assertEquals(e.getClass(), e1.getClass());
+    // Assert.assertEquals(e.getCause().getClass(), e1.getCause().getClass());
+    // }
     //
-    //        }
+    // }
     //
-    //    }
+    // }
     //
-    //    @Test
-    //    public void cachingMultiThreadedFetcherClearObjWrapperTest() {
+    // @Test
+    // public void cachingMultiThreadedFetcherClearObjWrapperTest() {
     //
-    //        final ConcurrentCachingFetcherWrapper<String> fetcher = new ConcurrentCachingFetcherWrapper<String>(new ImmediateConcurrentFetcherWrapper<>(() -> "test_ret"));
+    // final ConcurrentCachingFetcherWrapper<String> fetcher = new
+    // ConcurrentCachingFetcherWrapper<String>(new
+    // ImmediateConcurrentFetcherWrapper<>(() -> "test_ret"));
     //
-    //        final List<Future<String>> futures = new ArrayList<>();
+    // final List<Future<String>> futures = new ArrayList<>();
     //
-    //        final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
+    // final ExecutorServiceCachingFetcher exec = new
+    // ExecutorServiceCachingFetcher();
     //
-    //        for (int i = 0; i < 100; i++) {
+    // for (int i = 0; i < 100; i++) {
     //
-    //            try {
+    // try {
     //
-    //                final Future<String> future = exec.fetch().submit(() -> {
+    // final Future<String> future = exec.fetch().submit(() -> {
     //
-    //                    Thread.sleep(1);
+    // Thread.sleep(1);
     //
-    //                    try {
+    // try {
     //
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
-    //                        Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
-    //                        Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
+    // Assertions.assertThat(fetcher.fetch().value()).isEqualTo("test_ret");
+    // Assertions.assertThat(fetcher.clearFuture()).isEqualTo(true);
     //
-    //                    }
-    //                    catch (final FetcherException e) {
-    //                        if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
-    //                            Assertions.fail(e.getMessage());
-    //                        }
-    //                    }
+    // }
+    // catch (final FetcherException e) {
+    // if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
+    // Assertions.fail(e.getMessage());
+    // }
+    // }
     //
-    //                    return "";
+    // return "";
     //
-    //                });
+    // });
     //
-    //                futures.add(future);
+    // futures.add(future);
     //
-    //            }
-    //            catch (final FetcherException e) {
-    //                Assertions.fail(e.getMessage());
-    //            }
+    // }
+    // catch (final FetcherException e) {
+    // Assertions.fail(e.getMessage());
+    // }
     //
-    //        }
+    // }
     //
-    //        for (final Future<String> future : futures) {
-    //            try {
-    //                future.get();
-    //            }
-    //            catch (InterruptedException | ExecutionException e) {
-    //                e.printStackTrace();
-    //                Assertions.fail(e.getMessage());
-    //            }
-    //        }
+    // for (final Future<String> future : futures) {
+    // try {
+    // future.get();
+    // }
+    // catch (InterruptedException | ExecutionException e) {
+    // e.printStackTrace();
+    // Assertions.fail(e.getMessage());
+    // }
+    // }
     //
-    //    }
+    // }
 
 }

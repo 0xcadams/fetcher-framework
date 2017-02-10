@@ -14,10 +14,10 @@ public class DualWaterfallCachingFetcherWrapperTest {
     public void dualWaterfallCachingFetcherWrapperTest() {
 
         final MultiFetcher<String> fetcher = new WaterfallCachingFetcherWrapper<String>(e -> Assert.fail(),
-                                                                                                    new CachingFetcherWrapper<String>(() -> "test"),
-                                                                                                    new CachingFetcherWrapper<String>(() -> {
-                                                                                                        throw new FetcherException("should never reach here!");
-                                                                                                    }));
+                                                                                        new CachingFetcherWrapper<String>(() -> "test"),
+                                                                                        new CachingFetcherWrapper<String>(() -> {
+                                                                                            throw new FetcherException("should never reach here!");
+                                                                                        }));
 
         try {
             Assert.assertEquals("test", fetcher.fetch().value());

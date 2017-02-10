@@ -1,6 +1,6 @@
 /**
- * @author  cadams2
- * @since   Feb 9, 2017
+ * @author cadams2
+ * @since Feb 9, 2017
  */
 package com.rentworthy.fetcher;
 
@@ -13,16 +13,17 @@ public class MultiFetcherValueWrapper<T> implements Fetcher<T> {
     /**
      * @param fetcher
      */
-    public MultiFetcherValueWrapper(MultiFetcher<T> fetcher) {
+    public MultiFetcherValueWrapper(final MultiFetcher<T> fetcher) {
         this.fetcher = fetcher;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.rentworthy.fetcher.Fetcher#fetch()
      */
     @Override
     public T fetch() throws FetcherException {
-        return fetcher.fetch().value();
+        return this.fetcher.fetch().value();
     }
 
 }

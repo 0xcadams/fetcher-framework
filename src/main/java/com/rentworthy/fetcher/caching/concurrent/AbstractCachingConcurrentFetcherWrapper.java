@@ -23,7 +23,8 @@ public abstract class AbstractCachingConcurrentFetcherWrapper<T> implements Fetc
     private final Fetcher<T> fetcher;
     private final long maxWaitNanos;
 
-    protected AbstractCachingConcurrentFetcherWrapper(final Fetcher<T> fetcher, final long maxWaitNanos) {
+    protected AbstractCachingConcurrentFetcherWrapper(final Fetcher<T> fetcher,
+                                                      final long maxWaitNanos) {
         this.fetcher = fetcher;
         this.maxWaitNanos = maxWaitNanos;
     }
