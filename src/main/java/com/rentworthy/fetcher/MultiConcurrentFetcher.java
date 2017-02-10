@@ -132,7 +132,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
         boolean cleared = true;
 
-        for (final AbstractCachingConcurrentFetcher<T> fetcherWrapper : this.fetchers) {
+        for (final AbstractConcurrentFetcher<T> fetcherWrapper : this.fetchers) {
             cleared = cleared && fetcherWrapper.clearFuture();
             ;
         }

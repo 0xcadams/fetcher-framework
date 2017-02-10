@@ -4,7 +4,7 @@
  */
 package com.rentworthy.fetcher;
 
-class NonBlockingConcurrentFetcher<T> extends AbstractCachingConcurrentFetcher<T> {
+final class NonBlockingConcurrentFetcher<T> extends AbstractConcurrentFetcher<T> {
 
     private final static long DEFAULT_WAIT_NANOS = 1 * 1000 * 1000; // 1ms
 
