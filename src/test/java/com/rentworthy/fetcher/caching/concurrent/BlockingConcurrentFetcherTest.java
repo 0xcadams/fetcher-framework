@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
+import com.rentworthy.fetcher.FetcherFactory;
 import com.rentworthy.fetcher.exception.FetcherException;
 
 public class BlockingConcurrentFetcherTest {
@@ -16,7 +17,7 @@ public class BlockingConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperTest() {
 
-        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<String>(() -> "test");
+        final Fetcher<String> fetcher = FetcherFactory.getBlockingConcurrentFetcher(() -> "test");
 
         try {
             Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
@@ -34,7 +35,7 @@ public class BlockingConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<String>(() -> null);
+        final Fetcher<String> fetcher = FetcherFactory.getBlockingConcurrentFetcher(() -> null);
 
         try {
             fetcher.fetch();
@@ -49,7 +50,7 @@ public class BlockingConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<String>(() -> {
+        final Fetcher<String> fetcher = FetcherFactory.getBlockingConcurrentFetcher(() -> {
             throw new FetcherException(new RuntimeException());
         });
 
@@ -68,7 +69,7 @@ public class BlockingConcurrentFetcherTest {
 
         final int timeWait = 1000;
 
-        final Fetcher<String> fetcher = new BlockingConcurrentFetcher<>(() -> {
+        final Fetcher<String> fetcher = FetcherFactory.getBlockingConcurrentFetcher(() -> {
 
             try {
                 Thread.sleep(timeWait); // do something time-consuming

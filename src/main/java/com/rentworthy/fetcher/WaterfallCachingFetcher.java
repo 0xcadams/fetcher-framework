@@ -1,16 +1,14 @@
-package com.rentworthy.fetcher.caching.multi;
+package com.rentworthy.fetcher;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.rentworthy.fetcher.MultiFetcher;
-import com.rentworthy.fetcher.caching.CachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
 import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
-public class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
+class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> e.printStackTrace();
 
@@ -26,15 +24,17 @@ public class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
     @SafeVarargs
     public WaterfallCachingFetcher(final FetcherErrorCallback errorCallback,
                                    final CachingFetcher<T>... fetchers) {
+        this(errorCallback, Arrays.asList(fetchers));
+    }
 
-        this.fetchers = new ArrayList<>();
+    public WaterfallCachingFetcher(final List<CachingFetcher<T>> fetchers) {
+        this(WaterfallCachingFetcher.DEFAULT_ERROR_CALLBACK, fetchers);
+    }
 
-        for (final CachingFetcher<T> fetcher : fetchers) {
-            this.fetchers.add(fetcher);
-        }
-
+    public WaterfallCachingFetcher(final FetcherErrorCallback errorCallback,
+                                   final List<CachingFetcher<T>> fetchers) {
+        this.fetchers = fetchers;
         this.errorCallback = errorCallback;
-
     }
 
     @Override

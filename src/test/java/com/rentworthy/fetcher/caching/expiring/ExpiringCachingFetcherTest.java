@@ -10,40 +10,19 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
+import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.caching.concurrent.TestExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 
 public class ExpiringCachingFetcherTest {
-
-    @Test
-    public void testNeverExpiringCachingFetcherWrapper() {
-
-        final AtomicInteger count = new AtomicInteger(0);
-
-        final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcher<>(() -> count.incrementAndGet());
-
-        try {
-
-            Assertions.assertThat(cachingFetcher.fetch()).isEqualTo(1);
-
-            Thread.sleep(200);
-
-            Assertions.assertThat(cachingFetcher.fetch()).isEqualTo(1);
-
-        }
-        catch (FetcherException | InterruptedException e) {
-            Assertions.fail(e.getMessage());
-        }
-
-    }
 
     @Test
     public void testExpiringCachingFetcherWrapper() {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> cachingFetcher = new ExpiringCachingFetcher<>((Fetcher<Integer>) () -> count.incrementAndGet(),
-                                                                             50);
+        final Fetcher<Integer> cachingFetcher = FetcherFactory.getExpiringCachingFetcher(
+            (Fetcher<Integer>) () -> count.incrementAndGet(), 50);
 
         try {
 
@@ -76,10 +55,10 @@ public class ExpiringCachingFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = new ExpiringCachingFetcher<>((Fetcher<Integer>) () -> count.incrementAndGet(),
-                                                                     maxTimeMs);
+        final Fetcher<Integer> expire = FetcherFactory.getExpiringCachingFetcher(
+            (Fetcher<Integer>) () -> count.incrementAndGet(), maxTimeMs);
 
-        final ExecutorServiceCachingFetcher exec = new ExecutorServiceCachingFetcher();
+        final TestExecutorServiceCachingFetcher exec = new TestExecutorServiceCachingFetcher();
 
         final List<Future<String>> futures = new ArrayList<>();
 

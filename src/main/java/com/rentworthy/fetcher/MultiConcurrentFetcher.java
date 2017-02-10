@@ -2,29 +2,26 @@
  * @author cadams2
  * @since Feb 7, 2017
  */
-package com.rentworthy.fetcher.caching.concurrent.multi;
+package com.rentworthy.fetcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.rentworthy.fetcher.MultiFetcher;
-import com.rentworthy.fetcher.caching.concurrent.AbstractCachingConcurrentFetcher;
-import com.rentworthy.fetcher.caching.concurrent.NonBlockingConcurrentFetcher;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 import com.rentworthy.fetcher.response.FetcherResponse;
 import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
-public class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
+class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> {
     };
     private final static FetcherErrorCallback DEFAULT_TIMEOUT_CALLBACK = e -> {
     }; // default do nothing on timeout
 
-    private final static double DEFAULT_MAX_TIME_MS = Double.MAX_VALUE;
+    private final static double DEFAULT_MAX_TIME_MS = 60 * 1000;
 
     private final FetcherErrorCallback errorCallback;
     private final FetcherErrorCallback timeoutCallback;
@@ -43,7 +40,7 @@ public class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public MultiConcurrentFetcher(final int maxTimeMs,
-                                               final NonBlockingConcurrentFetcher<T>... fetchers) {
+                                  final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(MultiConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
              MultiConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
              maxTimeMs,
@@ -52,9 +49,9 @@ public class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public MultiConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                               final FetcherErrorCallback timeoutCallback,
-                                               final double maxTimeMs,
-                                               final NonBlockingConcurrentFetcher<T>... fetchers) {
+                                  final FetcherErrorCallback timeoutCallback,
+                                  final double maxTimeMs,
+                                  final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(errorCallback, timeoutCallback, maxTimeMs, Arrays.asList(fetchers));
     }
 
@@ -66,9 +63,9 @@ public class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
     }
 
     public MultiConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                               final FetcherErrorCallback timeoutCallback,
-                                               final double maxTimeMs,
-                                               final List<NonBlockingConcurrentFetcher<T>> fetchers) {
+                                  final FetcherErrorCallback timeoutCallback,
+                                  final double maxTimeMs,
+                                  final List<NonBlockingConcurrentFetcher<T>> fetchers) {
 
         this.fetchers = new ArrayList<>();
 
@@ -85,7 +82,7 @@ public class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
     @Override
     public synchronized FetcherResponse<T> fetch() throws FetcherException {
 
-        if (this.fetchers.size() == 0) {
+        if (this.fetchers.size() <= 0) {
             throw new FetcherException("Number of fetchers was zero!");
         }
 
@@ -96,7 +93,7 @@ public class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
             for (int i = 0; i < this.fetchers.size(); i++) { // loop through all
                                                              // fetchers
 
-                final AbstractCachingConcurrentFetcher<T> fetcher = this.fetchers.get(i);
+                final Fetcher<T> fetcher = this.fetchers.get(i);
 
                 try {
                     return FetcherResponseFactory.getFetcherResponse(i + 1, fetcher.fetch());

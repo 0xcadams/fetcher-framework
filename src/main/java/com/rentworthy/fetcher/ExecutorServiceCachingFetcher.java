@@ -1,11 +1,9 @@
-package com.rentworthy.fetcher.concurrent;
+package com.rentworthy.fetcher;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.rentworthy.fetcher.caching.CachingFetcher;
-
-public class ExecutorServiceCachingFetcher extends CachingFetcher<ExecutorService> {
+class ExecutorServiceCachingFetcher extends CachingFetcher<ExecutorService> {
 
     public ExecutorServiceCachingFetcher() {
         super(() -> Executors.newCachedThreadPool());

@@ -6,7 +6,7 @@ package com.rentworthy.fetcher;
 
 import com.rentworthy.fetcher.exception.FetcherException;
 
-public class MultiFetcherValue<T> implements Fetcher<T> {
+class MultiFetcherValue<T> implements Fetcher<T> {
 
     private final MultiFetcher<T> fetcher;
 

@@ -1,10 +1,9 @@
-package com.rentworthy.fetcher.caching;
+package com.rentworthy.fetcher;
 
-import com.rentworthy.fetcher.Fetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public class CachingFetcher<T> implements Fetcher<T> {
+class CachingFetcher<T> implements Fetcher<T> {
 
     private final Object lock = new Object();
     private final Fetcher<T> fetcher;

@@ -2,11 +2,9 @@
  * @author cadams2
  * @since Feb 9, 2017
  */
-package com.rentworthy.fetcher.caching.concurrent;
+package com.rentworthy.fetcher;
 
-import com.rentworthy.fetcher.Fetcher;
-
-public class BlockingConcurrentFetcher<T> extends AbstractCachingConcurrentFetcher<T> {
+class BlockingConcurrentFetcher<T> extends AbstractCachingConcurrentFetcher<T> {
 
     private final static long DEFAULT_WAIT_NANOS = Long.MAX_VALUE; // MAX_VALUE
 

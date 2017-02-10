@@ -2,7 +2,7 @@
  * @author cadams2
  * @since Feb 8, 2017
  */
-package com.rentworthy.fetcher.caching.concurrent;
+package com.rentworthy.fetcher;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -10,13 +10,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.concurrent.ExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.concurrent.FetcherCallable;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
-public abstract class AbstractCachingConcurrentFetcher<T> implements Fetcher<T> {
+abstract class AbstractCachingConcurrentFetcher<T> implements Fetcher<T> {
 
     private final static Fetcher<ExecutorService> EXECUTOR_SERVICE_FETCHER = new ExecutorServiceCachingFetcher();
 
