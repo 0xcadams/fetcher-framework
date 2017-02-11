@@ -4,31 +4,31 @@
  */
 package com.rentworthy.fetcher;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
+import com.rentworthy.fetcher.exception.FetcherTimeoutCallback;
 import com.rentworthy.fetcher.response.FetcherResponse;
-import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
 class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> {
     };
-    private final static FetcherErrorCallback DEFAULT_TIMEOUT_CALLBACK = e -> {
+    private final static FetcherTimeoutCallback DEFAULT_TIMEOUT_CALLBACK = e -> {
     }; // default do nothing on timeout
 
     private final static double DEFAULT_MAX_TIME_MS = 10 * 1000;
 
     private final FetcherErrorCallback errorCallback;
-    private final FetcherErrorCallback timeoutCallback;
+    private final FetcherTimeoutCallback timeoutCallback;
 
     private final double maxTimeMs;
 
-    private final List<NonBlockingConcurrentFetcher<T>> fetchers;
+    private final ImmutableList<NonBlockingConcurrentFetcher<T>> fetchers;
 
     @SafeVarargs
     public MultiConcurrentFetcher(final NonBlockingConcurrentFetcher<T>... fetchers) {
@@ -49,7 +49,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public MultiConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                  final FetcherErrorCallback timeoutCallback,
+                                  final FetcherTimeoutCallback timeoutCallback,
                                   final double maxTimeMs,
                                   final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(errorCallback, timeoutCallback, maxTimeMs, Arrays.asList(fetchers));
@@ -63,15 +63,11 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
     }
 
     public MultiConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                  final FetcherErrorCallback timeoutCallback,
+                                  final FetcherTimeoutCallback timeoutCallback,
                                   final double maxTimeMs,
                                   final List<NonBlockingConcurrentFetcher<T>> fetchers) {
 
-        this.fetchers = new ArrayList<>();
-
-        for (final NonBlockingConcurrentFetcher<T> fetcher : fetchers) {
-            this.fetchers.add(fetcher);
-        }
+        this.fetchers = ImmutableList.copyOf(fetchers);
 
         this.errorCallback = errorCallback;
         this.timeoutCallback = timeoutCallback;
@@ -80,7 +76,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
     }
 
     @Override
-    public synchronized FetcherResponse<T> fetch() throws FetcherException {
+    public FetcherResponse<T> fetch() throws FetcherException {
 
         if (this.fetchers.size() <= 0) {
             throw new FetcherException("Number of fetchers was zero!");
@@ -99,11 +95,11 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
                     return FetcherResponseFactory.getFetcherResponse(i + 1, fetcher.fetch());
                 }
                 catch (final FetcherException e) {
-                    if (!e.getCause().getClass().equals(FetcherNotReadyException.class)) {
-                        this.errorCallback.onError(e);
+                    if (e.getCause() instanceof FetcherNotReadyException) {
+                        this.timeoutCallback.onTimeout((FetcherNotReadyException) e.getCause());
                     }
                     else {
-                        this.timeoutCallback.onError(e);
+                        this.errorCallback.onError(e);
                     }
                 }
 
@@ -116,28 +112,11 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     }
 
-    // public boolean clearCachedObject() {
-    //
-    // boolean cleared = true;
-    //
-    // for (ConcurrentFetcherWrapper<T> fetcherWrapper : fetchers) {
-    // cleared = cleared && fetcherWrapper.clearCachedObject();
-    // }
-    //
-    // return cleared;
-    //
-    // }
+    public void clearFuture() {
 
-    public boolean clearFuture() {
-
-        boolean cleared = true;
-
-        for (final AbstractCachingConcurrentFetcher<T> fetcherWrapper : this.fetchers) {
-            cleared = cleared && fetcherWrapper.clearFuture();
-            ;
+        for (final AbstractConcurrentFetcher<T> fetcherWrapper : this.fetchers) {
+            fetcherWrapper.clearFuture();
         }
-
-        return cleared;
 
     }
 

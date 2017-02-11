@@ -3,18 +3,17 @@ package com.rentworthy.fetcher;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.response.FetcherResponse;
-import com.rentworthy.fetcher.response.FetcherResponseFactory;
 
 class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> e.printStackTrace();
 
     private final FetcherErrorCallback errorCallback;
-
-    private final List<CachingFetcher<T>> fetchers;
+    private final ImmutableList<CachingFetcher<T>> fetchers;
 
     @SafeVarargs
     public WaterfallCachingFetcher(final CachingFetcher<T>... fetchers) {
@@ -33,12 +32,12 @@ class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     public WaterfallCachingFetcher(final FetcherErrorCallback errorCallback,
                                    final List<CachingFetcher<T>> fetchers) {
-        this.fetchers = fetchers;
+        this.fetchers = ImmutableList.copyOf(fetchers);
         this.errorCallback = errorCallback;
     }
 
     @Override
-    public synchronized FetcherResponse<T> fetch() throws FetcherException {
+    public FetcherResponse<T> fetch() throws FetcherException {
 
         if (this.fetchers.size() == 0) {
             throw new FetcherException("Number of fetchers was zero!");

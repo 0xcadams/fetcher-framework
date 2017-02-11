@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.Fetchers;
 import com.rentworthy.fetcher.exception.FetcherException;
 
 public class DualWaterfallCachingFetcherTest {
@@ -13,7 +13,7 @@ public class DualWaterfallCachingFetcherTest {
     @Test
     public void dualWaterfallCachingFetcherTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(e -> Assert.fail(),
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(e -> Assert.fail(),
             (Fetcher<String>) () -> "test",
             (Fetcher<String>) () -> {
                 throw new FetcherException("should never reach here!");
@@ -36,7 +36,7 @@ public class DualWaterfallCachingFetcherTest {
     @Test
     public void dualWaterfallCachingFetcherBackupTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (Fetcher<String>) () -> {
                 throw new FetcherException("should never reach here!");
@@ -59,7 +59,7 @@ public class DualWaterfallCachingFetcherTest {
     @Test
     public void dualWaterfallCachingFetcherAllFailingTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
@@ -81,7 +81,7 @@ public class DualWaterfallCachingFetcherTest {
     @Test
     public void dualWaterfallCachingFetcherTimingTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
 
@@ -119,7 +119,7 @@ public class DualWaterfallCachingFetcherTest {
     @Test
     public void dualWaterfallCachingFetcherTimingBackupTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
 

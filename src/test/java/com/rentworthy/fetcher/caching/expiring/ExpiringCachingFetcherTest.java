@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.Fetchers;
 import com.rentworthy.fetcher.caching.concurrent.TestExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 
@@ -21,7 +21,7 @@ public class ExpiringCachingFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> cachingFetcher = FetcherFactory.getExpiringCachingFetcher(
+        final Fetcher<Integer> cachingFetcher = Fetchers.getExpiringCachingFetcher(
             (Fetcher<Integer>) () -> count.incrementAndGet(), 50);
 
         try {
@@ -51,11 +51,11 @@ public class ExpiringCachingFetcherTest {
     @Test
     public void testMultiThreadedExpiringCachingFetcherWrapper() {
 
-        final int maxTimeMs = 1000;
+        final int maxTimeMs = 400;
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = FetcherFactory.getExpiringCachingFetcher(
+        final Fetcher<Integer> expire = Fetchers.getExpiringCachingFetcher(
             (Fetcher<Integer>) () -> count.incrementAndGet(), maxTimeMs);
 
         final TestExecutorServiceCachingFetcher exec = new TestExecutorServiceCachingFetcher();

@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.Fetchers;
 import com.rentworthy.fetcher.exception.FetcherException;
 
 public class DualConcurrentCachingFetcherTest {
@@ -23,7 +23,7 @@ public class DualConcurrentCachingFetcherTest {
 
             final int waitTime = 500;
 
-            final Fetcher<String> fetcher = FetcherFactory.getMultiConcurrentFetcher(() -> {
+            final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(() -> {
                 try {
                     Thread.sleep(waitTime);
                 }
@@ -80,7 +80,7 @@ public class DualConcurrentCachingFetcherTest {
 
         final int waitTime = 500;
 
-        final Fetcher<String> fetcher = FetcherFactory.getMultiConcurrentFetcher(() -> {
+        final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(() -> {
             return "second";
         }, (() -> {
             throw new FetcherException("faster");

@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.Fetchers;
 import com.rentworthy.fetcher.exception.FetcherException;
 
 public class TripleWaterfallCachingFetcherTest {
@@ -13,7 +13,7 @@ public class TripleWaterfallCachingFetcherTest {
     @Test
     public void tripleWaterfallCachingFetcherTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> "test"),
             (() -> {
@@ -41,7 +41,7 @@ public class TripleWaterfallCachingFetcherTest {
     @Test
     public void tripleWaterfallCachingFetcherBackupTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
@@ -68,7 +68,7 @@ public class TripleWaterfallCachingFetcherTest {
     @Test
     public void tripleWaterfallCachingFetcherBackupBackupTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
@@ -96,7 +96,7 @@ public class TripleWaterfallCachingFetcherTest {
     @Test
     public void tripleWaterfallCachingFetcherAllFailingTest() {
 
-        final Fetcher<String> fetcher = FetcherFactory.getWaterfallFetcher(
+        final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");

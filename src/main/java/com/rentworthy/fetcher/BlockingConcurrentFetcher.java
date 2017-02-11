@@ -4,7 +4,7 @@
  */
 package com.rentworthy.fetcher;
 
-class BlockingConcurrentFetcher<T> extends AbstractCachingConcurrentFetcher<T> {
+final class BlockingConcurrentFetcher<T> extends AbstractConcurrentFetcher<T> {
 
     private final static long DEFAULT_WAIT_NANOS = Long.MAX_VALUE; // MAX_VALUE
 

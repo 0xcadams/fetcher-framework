@@ -4,6 +4,8 @@ import com.rentworthy.fetcher.exception.FetcherException;
 
 class ExpiringCachingFetcher<T> extends CachingFetcher<T> {
 
+    private final Object lock = new Object();
+
     private volatile long lastClearTime;
     private final double maxCacheTime;
 
@@ -18,14 +20,18 @@ class ExpiringCachingFetcher<T> extends CachingFetcher<T> {
     }
 
     @Override
-    public synchronized T fetch() throws FetcherException {
+    public T fetch() throws FetcherException {
 
-        if ((System.currentTimeMillis() - this.lastClearTime) >= this.maxCacheTime) {
-            this.clearCachedObject();
-            this.lastClearTime = System.currentTimeMillis();
+        synchronized (this.lock) {
+
+            if ((System.currentTimeMillis() - this.lastClearTime) >= this.maxCacheTime) {
+                this.clearCachedObject();
+                this.lastClearTime = System.currentTimeMillis();
+            }
+
+            return super.fetch();
+
         }
-
-        return super.fetch();
 
     }
 
