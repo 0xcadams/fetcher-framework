@@ -4,7 +4,7 @@
 
 	<groupId>rentworthy</groupId>
 	<artifactId>fetcher-framework</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 
 	<name>Fetcher Framework</name>
 	<description>A Java framework for effortlessly writing loosely-coupled code designed for failure.</description>

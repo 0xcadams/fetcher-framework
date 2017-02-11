@@ -179,7 +179,7 @@ public class CachingFetcherTest {
 
         final TestExecutorServiceCachingFetcher exec = new TestExecutorServiceCachingFetcher();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000; i++) {
 
             try {
 
@@ -187,61 +187,16 @@ public class CachingFetcherTest {
 
                     try {
 
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        fetcher.clearCachedObject();
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                        Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
+                        for (int j = 0; j < 1000; j++) {
+
+                            Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
+                            Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
+                            fetcher.clearCachedObject();
+                            fetcher.clearCachedObject();
+                            fetcher.clearCachedObject();
+                            fetcher.clearCachedObject();
+
+                        }
 
                     }
                     catch (final FetcherException e) {
