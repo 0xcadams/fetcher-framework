@@ -51,7 +51,7 @@ public class ExpiringCachingFetcherTest {
     @Test
     public void testMultiThreadedExpiringCachingFetcherWrapper() {
 
-        final int maxTimeMs = 1000;
+        final int maxTimeMs = 400;
 
         final AtomicInteger count = new AtomicInteger(0);
 

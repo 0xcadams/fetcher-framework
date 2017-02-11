@@ -4,10 +4,10 @@
  */
 package com.rentworthy.fetcher;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
@@ -28,7 +28,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     private final double maxTimeMs;
 
-    private final List<NonBlockingConcurrentFetcher<T>> fetchers;
+    private final ImmutableList<NonBlockingConcurrentFetcher<T>> fetchers;
 
     @SafeVarargs
     public MultiConcurrentFetcher(final NonBlockingConcurrentFetcher<T>... fetchers) {
@@ -67,11 +67,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
                                   final double maxTimeMs,
                                   final List<NonBlockingConcurrentFetcher<T>> fetchers) {
 
-        this.fetchers = new ArrayList<>();
-
-        for (final NonBlockingConcurrentFetcher<T> fetcher : fetchers) {
-            this.fetchers.add(fetcher);
-        }
+        this.fetchers = ImmutableList.copyOf(fetchers);
 
         this.errorCallback = errorCallback;
         this.timeoutCallback = timeoutCallback;
@@ -80,7 +76,7 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
     }
 
     @Override
-    public synchronized FetcherResponse<T> fetch() throws FetcherException {
+    public FetcherResponse<T> fetch() throws FetcherException {
 
         if (this.fetchers.size() <= 0) {
             throw new FetcherException("Number of fetchers was zero!");
@@ -115,18 +111,6 @@ class MultiConcurrentFetcher<T> implements MultiFetcher<T> {
             this.fetchers.get(this.fetchers.size() - 1).fetch());
 
     }
-
-    // public boolean clearCachedObject() {
-    //
-    // boolean cleared = true;
-    //
-    // for (ConcurrentFetcherWrapper<T> fetcherWrapper : fetchers) {
-    // cleared = cleared && fetcherWrapper.clearCachedObject();
-    // }
-    //
-    // return cleared;
-    //
-    // }
 
     public void clearFuture() {
 

@@ -198,7 +198,7 @@ public class ExpiringMultiConcurrentFetcherTest {
     @Test
     public void testMultiThreadedExpiringConcurrentCachingFetcherWrapper() {
 
-        final int maxTimeMs = 800;
+        final int maxTimeMs = 1500;
 
         final AtomicInteger count = new AtomicInteger(0);
 
@@ -218,7 +218,7 @@ public class ExpiringMultiConcurrentFetcherTest {
 
                     try {
 
-                        for (int countRuns = 1; countRuns <= 10; countRuns++) {
+                        for (int countRuns = 1; countRuns <= 4; countRuns++) {
 
                             Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
                             Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
