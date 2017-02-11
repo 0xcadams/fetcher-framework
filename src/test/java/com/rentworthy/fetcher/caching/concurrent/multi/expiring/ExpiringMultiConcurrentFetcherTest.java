@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import com.rentworthy.fetcher.Fetcher;
-import com.rentworthy.fetcher.FetcherFactory;
+import com.rentworthy.fetcher.Fetchers;
 import com.rentworthy.fetcher.caching.concurrent.TestExecutorServiceCachingFetcher;
 import com.rentworthy.fetcher.exception.FetcherException;
 import com.rentworthy.fetcher.exception.FetcherNotReadyException;
@@ -28,7 +28,7 @@ public class ExpiringMultiConcurrentFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = FetcherFactory.getExpiringMultiConcurrentFetcher(maxTimeMs,
+        final Fetcher<Integer> expire = Fetchers.getExpiringMultiConcurrentFetcher(maxTimeMs,
             () -> count.incrementAndGet());
 
         try {
@@ -202,7 +202,7 @@ public class ExpiringMultiConcurrentFetcherTest {
 
         final AtomicInteger count = new AtomicInteger(0);
 
-        final Fetcher<Integer> expire = FetcherFactory.getExpiringMultiConcurrentFetcher(maxTimeMs,
+        final Fetcher<Integer> expire = Fetchers.getExpiringMultiConcurrentFetcher(maxTimeMs,
             () -> count.incrementAndGet());
 
         final TestExecutorServiceCachingFetcher exec = new TestExecutorServiceCachingFetcher();

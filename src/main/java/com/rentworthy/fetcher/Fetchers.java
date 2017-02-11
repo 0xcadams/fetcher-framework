@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.rentworthy.fetcher.exception.FetcherErrorCallback;
 
-public final class FetcherFactory {
+public final class Fetchers {
 
     @SafeVarargs
     public final static <T> Fetcher<T> getMultiConcurrentFetcher(final Fetcher<T>... fetchers) {
