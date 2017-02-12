@@ -35,10 +35,20 @@ public class BlockingConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperNullTest() {
 
-        final Fetcher<String> fetcher = Fetchers.getBlockingConcurrentFetcher(() -> null);
+        final Fetcher<String> fetcher = Fetchers.getBlockingConcurrentFetcher(() -> {
+            
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            
+            return null;
+            
+        });
 
         try {
-            fetcher.fetch();
             Assertions.assertThat(fetcher.fetch()).isNull();
         }
         catch (final FetcherException e) {

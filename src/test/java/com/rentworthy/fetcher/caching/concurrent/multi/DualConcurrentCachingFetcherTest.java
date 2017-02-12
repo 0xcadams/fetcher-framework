@@ -4,6 +4,8 @@
  */
 package com.rentworthy.fetcher.caching.concurrent.multi;
 
+import java.io.IOException;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
@@ -106,6 +108,97 @@ public class DualConcurrentCachingFetcherTest {
             Assert.assertEquals("second", fetcher.fetch());
             Assert.assertEquals("second", fetcher.fetch());
             Assert.assertEquals("second", fetcher.fetch());
+
+        }
+        catch (final FetcherException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+
+    }
+
+    @Test
+    public void testDualConcurrentCachingFetcherFailing() {
+
+        final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(() -> {
+            try {
+                Thread.sleep(1000);
+                throw new IOException("Networking unavailable.");
+            }
+            catch (final InterruptedException | IOException e) {
+                throw new FetcherException(e);
+            }
+        }, () -> {
+            return "backup value";
+        });
+
+        try {
+
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+
+            try {
+                Thread.sleep(1100);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+
+        }
+        catch (final FetcherException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+
+    }
+
+//    @Test
+    public void testDualConcurrentCachingFetcherFailingThenPassing() {
+
+        int count = 0;
+
+        final Fetcher<String> fetcher = Fetchers.getExpiringMultiConcurrentFetcher(2000, () -> {
+            try {
+                System.out.println("running");
+                Thread.sleep(800);
+                throw new IOException();
+            }
+            catch (final InterruptedException | IOException e) {
+                throw new FetcherException(e);
+            }
+        }, () -> {
+            return "backup value";
+        });
+
+        try {
+
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+
+            try {
+                Thread.sleep(6000);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
+            Assert.assertEquals("backup value", fetcher.fetch());
 
         }
         catch (final FetcherException e) {
