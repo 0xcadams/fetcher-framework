@@ -18,16 +18,16 @@ import com.rentworthy.fetcher.exception.FetcherNotReadyException;
 
 abstract class AbstractConcurrentFetcher<T> implements Fetcher<T> {
 
-    private final static Fetcher<ExecutorService> EXECUTOR_SERVICE_FETCHER = new ExecutorServiceCachingFetcher();
-
     private final ReadWriteLock futureLock;
 
     private final Fetcher<T> fetcher;
     protected volatile Future<T> future;
     private final long maxWaitNanos;
+    private final Fetcher<ExecutorService> executorServiceFetcher;
 
-    protected AbstractConcurrentFetcher(final Fetcher<T> fetcher, final long maxWaitNanos) {
+    protected AbstractConcurrentFetcher(final Fetcher<T> fetcher, final Fetcher<ExecutorService> executorServiceFetcher, final long maxWaitNanos) {
         this.futureLock = new ReentrantReadWriteLock();
+        this.executorServiceFetcher = executorServiceFetcher;
         this.fetcher = fetcher;
         this.maxWaitNanos = maxWaitNanos;
     }
@@ -40,7 +40,7 @@ abstract class AbstractConcurrentFetcher<T> implements Fetcher<T> {
         try {
 
             if (this.futureIsNull()) {
-                this.future = AbstractConcurrentFetcher.EXECUTOR_SERVICE_FETCHER.fetch().submit(
+                this.future = executorServiceFetcher.fetch().submit(
                     new FetcherCallable<T>(this.fetcher));
             }
 
