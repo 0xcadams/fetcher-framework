@@ -48,7 +48,7 @@ catch (FetcherException e) {
 
 This will block for one second and return `"fetched"`. Let's now say that we want to attempt to access a resource, such as a web API or local file.
 
-To be resistant to failure, we want to have a backup value in case networking is unavailable or the file system is unable to be accessed. Typically this is a complicated mess of launching Threads and checking their respective Futures, with even more complicated error handling.
+To be resistant to failure, we want to have a backup in case networking is unavailable or the file system is unable to be accessed. Typically this is a complicated mess of launching Threads and checking their respective Futures, with even more complicated error handling.
 
 With Fetcher, it simplifies that process.
 
@@ -66,3 +66,32 @@ private static final Fetcher<String> FETCHER = Fetchers.getMultiConcurrentFetche
 });
 ```
 
+This operation is also "non-blocking", which in Fetcher means that it will block for 1 millisecond before attempting to run the next thread. The above example will run the first Lambda expression, block for 1 millisecond, then move to the next expression. If neither operation completes in 1 millisecond, the Fetchers will be checked for completion again, in order.
+
+```java
+private static final Fetcher<String> FETCHER = Fetchers.getMultiConcurrentFetcher(() -> {
+    try {
+        Thread.sleep(1000);
+        return "first";
+    }
+    catch (final InterruptedException e) {
+        throw new FetcherException(e);
+    }
+}, () -> {
+    try {
+        Thread.sleep(500);
+        return "next";
+    }
+    catch (final InterruptedException e) {
+        throw new FetcherException(e);
+    }
+});
+```
+
+We can then fetch the value. This will block for 500 ms until the "next" expression returns. When the fetcher is called again after one second, the "first" expression will now be returned, since it is higher in the priority list.
+
+If both of the expressions do not complete within 10 seconds (or any `long` value which is passed in) then `FETCHER.fetch()` will throw a `FetcherNotReadyException`. Once one of them completes, then it will return the corresponding value.
+
+## Feedback
+
+We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/rentworthy/fetcher-framework/issues).
