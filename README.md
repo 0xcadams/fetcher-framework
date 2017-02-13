@@ -24,7 +24,8 @@ Fetcher has a comprehensive set of unit tests that can take several minutes to r
 Since this project was created to simplify the (longwinded) process of creating concurrent processes in Java, we'll start with a few (oversimplified) examples.
 
 ```java
-private static final Fetcher<String> FETCHER = Fetchers.getBlockingConcurrentFetcher(() -> {    
+private static final Fetcher<String> FETCHER = Fetchers.getBlockingConcurrentFetcher(
+() -> {    
     try {
         Thread.sleep(1000); // simulated IO
     }
@@ -53,7 +54,8 @@ Let's now say that we want to attempt to access a resource, such as a web API or
 With Fetcher, this is easy.
 
 ```java
-final Fetcher<String> stringExceptionFetcher = Fetchers.getMultiConcurrentFetcher(() -> {
+final Fetcher<String> stringExceptionFetcher = Fetchers.getBlockingMultiConcurrentFetcher(
+() -> {
     try {
         Thread.sleep(1000);
         throw new IOException("Networking unavailable.");
@@ -61,26 +63,31 @@ final Fetcher<String> stringExceptionFetcher = Fetchers.getMultiConcurrentFetche
     catch (final InterruptedException | IOException e) {
         throw new FetcherException(e);
     }
-}, () -> {
+},
+() -> {
     return "backup value";
 });
 ```
 
-This operation is also "non-blocking", which in Fetcher means that it will block for 1 millisecond before attempting to run the next thread. The above example will run the first Lambda expression, block for 1 millisecond, then move to the next expression. If neither operation completes in 1 millisecond, the Fetchers will be checked for completion again, in order.
+This operation is also "non-blocking" for each individual thread, which in Fetcher means that it will block for 1 millisecond before attempting to run the next thread. The above example will run the first Lambda expression, block for 1 millisecond, then move to the next expression. If neither operation completes in 1 millisecond, the Fetchers will be checked for completion again, in order.
+
+Once one of them completes or the timeout is reached (whichever comes first), then it will return the corresponding value or throw a `FetcherNotReadyException`. The default timeout value is ten seconds.
 
 ```java
-final Fetcher<String> stringFetcher = Fetchers.getMultiConcurrentFetcher(() -> {
+final Fetcher<String> stringFetcher = Fetchers.getBlockingMultiConcurrentFetcher(
+() -> {
     try {
         Thread.sleep(1000);
-        return "first";
+        return "primary";
     }
     catch (final InterruptedException e) {
         throw new FetcherException(e);
     }
-}, () -> {
+},
+() -> {
     try {
         Thread.sleep(500);
-        return "next";
+        return "secondary";
     }
     catch (final InterruptedException e) {
         throw new FetcherException(e);
@@ -88,10 +95,8 @@ final Fetcher<String> stringFetcher = Fetchers.getMultiConcurrentFetcher(() -> {
 });
 ```
 
-We can then fetch the value. This will block for 500 ms until the "next" expression returns. When the `stringFetcher` is called again after one second, the "first" expression will now be returned, since it is higher in the priority list.
-
-If both of the expressions do not complete within 10 seconds (or any `long` value which is passed in) then `fetcher.fetch()` will throw a `FetcherNotReadyException`. Once one of them completes, then it will return the corresponding value.
+This shows the behavior of the `BlockingMultiConcurrentFetcher` more clearly. When we fetch the value, it will block for 500 ms until the "secondary" expression returns. When the fetcher is called again after one second, the "primary" expression will now be returned, since it is higher in the priority list.
 
 ## Feedback
 
-We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/rentworthy/fetcher-framework/issues).
+*We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/rentworthy/fetcher-framework/issues).*
