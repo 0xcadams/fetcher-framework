@@ -7,6 +7,18 @@ Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent 
 * Java 8 or higher, 64-bit
 * Maven 3.3.9+ (for building)
 
+## Maven Central
+
+To include Fetcher in your project, add the following entry to your `pom.xml`:
+
+```
+<dependency>
+  <groupId>net.rentworthy</groupId>
+  <artifactId>fetcher-framework</artifactId>
+  <version>1.1</version>
+</dependency>
+```
+
 ## Building Fetcher
 
 Fetcher is a standard Maven project. Simply run the following command from the project root directory:
