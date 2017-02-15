@@ -9,7 +9,7 @@ Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent 
 
 ## Maven Central
 
-To include Fetcher in your project, add the following entry to your `pom.xml`:
+To include Fetcher in your project, add the following [entry](https://search.maven.org/#artifactdetails%7Cnet.rentworthy%7Cfetcher-framework%7C1.1%7Cjar) to your `pom.xml`:
 
 ```
 <dependency>
@@ -111,4 +111,4 @@ This shows the behavior of the `BlockingMultiConcurrentFetcher` more clearly. Wh
 
 ## Feedback
 
-*We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/rentworthy/fetcher-framework/issues).*
+*We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/rentworthy/fetcher-framework/issues), and feel free to [visit us](https://www.rentworthy.net) (still in beta).*
