@@ -17,5 +17,7 @@ after_success:
 - "./cd/before-deploy.sh"
 - "./cd/deploy.sh"
 before_install:
+- openssl aes-256-cbc -K $encrypted_691e4943f9cf_key -iv $encrypted_691e4943f9cf_iv
+  -in jarsigningkey.asc.enc -out jarsigningkey.asc -d
 - openssl aes-256-cbc -K $encrypted_49638f377579_key -iv $encrypted_49638f377579_iv
   -in cd/signingkey.asc.enc -out cd/signingkey.asc -d
