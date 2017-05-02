@@ -2,13 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.rentworthy</groupId>
+	<groupId>com.lieuu</groupId>
 	<artifactId>fetcher-framework</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 
 	<name>Fetcher Framework</name>
 	<description>A Java framework for effortlessly writing loosely-coupled code designed for failure.</description>
-	<url>https://www.rentworthy.net</url>
+	<url>https://www.lieuu.com</url>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -17,9 +17,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:git://github.com/rentworthy/fetcher-framework.git</connection>
-		<developerConnection>scm:git:git@github.com:rentworthy/fetcher-framework.git</developerConnection>
-		<url>https://github.com/rentworthy/fetcher-framework</url>
+		<connection>scm:git:git://github.com/lieuu/fetcher-framework.git</connection>
+		<developerConnection>scm:git:git@github.com:lieuu/fetcher-framework.git</developerConnection>
+		<url>https://github.com/lieuu/fetcher-framework</url>
 	</scm>
 
 	<developers>
