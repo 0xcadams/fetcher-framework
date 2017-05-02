@@ -1,4 +1,4 @@
-# Fetcher [![Build Status](https://travis-ci.org/rentworthy/fetcher-framework.svg?branch=master)](https://travis-ci.org/rentworthy/fetcher-framework)
+# Fetcher [![Build Status](https://travis-ci.org/lieuu/fetcher-framework.svg?branch=master)](https://travis-ci.org/lieuu/fetcher-framework)
 
 Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent code designed for failure.
 
@@ -9,13 +9,13 @@ Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent 
 
 ## Maven Central
 
-To include Fetcher in your project, add the following [entry](https://search.maven.org/#artifactdetails%7Cnet.rentworthy%7Cfetcher-framework%7C1.1%7Cjar) to your `pom.xml`:
+To include Fetcher in your project, add the following [entry](https://search.maven.org/#artifactdetails%7Cnet.lieuu%7Cfetcher-framework%7C1.2%7Cjar) to your `pom.xml`:
 
 ```
 <dependency>
-  <groupId>net.rentworthy</groupId>
+  <groupId>com.lieuu</groupId>
   <artifactId>fetcher-framework</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 
@@ -111,4 +111,4 @@ This shows the behavior of the `BlockingMultiConcurrentFetcher` more clearly. Wh
 
 ## Feedback
 
-*We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/rentworthy/fetcher-framework/issues), and feel free to [visit us](https://www.rentworthy.net) (still in beta).*
+*We are actively maintaining this repository - if you have any bugs, feature requests, pull requests, feedback, please [create an issue](https://github.com/lieuu/fetcher-framework/issues), and feel free to [visit us](https://www.lieuu.com) (still in beta).*
