@@ -20,7 +20,7 @@ class CachingFetcher<T> implements Fetcher<T> {
         this.objLock = new ReentrantReadWriteLock();
         this.exceptionLock = new ReentrantReadWriteLock();
         this.fetcher = fetcher;
-        this.prevObj = null;
+        this.prevObj = new SoftReference<>(null);
         this.prevException = null;
     }
 
