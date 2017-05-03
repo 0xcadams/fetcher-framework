@@ -22,9 +22,11 @@ public class ExpiringCachingFetcherTest {
         final AtomicInteger count = new AtomicInteger(0);
 
         final Fetcher<Integer> cachingFetcher = Fetchers.getExpiringCachingFetcher(
-            (Fetcher<Integer>) () -> count.incrementAndGet(), 50);
+            () -> count.incrementAndGet(), 50);
 
         try {
+
+            Thread.sleep(200);
 
             Assertions.assertThat(cachingFetcher.fetch()).isEqualTo(1);
 

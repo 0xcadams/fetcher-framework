@@ -1,5 +1,6 @@
 package com.lieuu.fetcher;
 
+import java.lang.ref.SoftReference;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -12,7 +13,7 @@ class CachingFetcher<T> implements Fetcher<T> {
     private final ReadWriteLock exceptionLock;
 
     private final Fetcher<T> fetcher;
-    private T prevObj;
+    private SoftReference<T> prevObj;
     private volatile FetcherException prevException;
 
     public CachingFetcher(final Fetcher<T> fetcher) {
@@ -43,8 +44,10 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.objLock.readLock().lock();
 
             try {
-                if (this.prevObj != null) {
-                    return this.prevObj;
+                T objectCurrent = prevObj.get();
+
+                if (objectCurrent != null) {
+                    return objectCurrent;
                 }
             }
             finally {
@@ -58,8 +61,7 @@ class CachingFetcher<T> implements Fetcher<T> {
             }
             else {
                 this.setPrevObj(value);// store the previously retrieved value
-                                       // for
-                // faster retrieval
+                                       // for faster retrieval
                 return value;
             }
 
@@ -99,7 +101,7 @@ class CachingFetcher<T> implements Fetcher<T> {
         this.objLock.writeLock().lock();
 
         try {
-            this.prevObj = obj;
+            this.prevObj = new SoftReference<>(obj);
         }
         finally {
             this.objLock.writeLock().unlock();
