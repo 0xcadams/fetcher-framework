@@ -1,5 +1,6 @@
 package com.lieuu.fetcher;
 
+import java.lang.ref.SoftReference;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -12,15 +13,15 @@ class CachingFetcher<T> implements Fetcher<T> {
     private final ReadWriteLock exceptionLock;
 
     private final Fetcher<T> fetcher;
-    private T prevObj;
-    private volatile FetcherException prevException;
+    private SoftReference<T> prevObj;
+    private SoftReference<FetcherException> prevException;
 
     public CachingFetcher(final Fetcher<T> fetcher) {
         this.objLock = new ReentrantReadWriteLock();
         this.exceptionLock = new ReentrantReadWriteLock();
         this.fetcher = fetcher;
-        this.prevObj = null;
-        this.prevException = null;
+        this.prevObj = new SoftReference<>(null);
+        this.prevException = new SoftReference<>(null);
     }
 
     @Override
@@ -31,9 +32,11 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.exceptionLock.readLock().lock();
 
             try {
-                if ((this.prevException != null)
-                    && !(this.prevException.getCause() instanceof FetcherNotReadyException)) {
-                    throw this.prevException;
+                final FetcherException exceptionCurrent = prevException.get();
+                
+                if ((exceptionCurrent != null)
+                    && !(exceptionCurrent.getCause() instanceof FetcherNotReadyException)) {
+                    throw exceptionCurrent;
                 }
             }
             finally {
@@ -43,8 +46,10 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.objLock.readLock().lock();
 
             try {
-                if (this.prevObj != null) {
-                    return this.prevObj;
+                final T objectCurrent = prevObj.get();
+
+                if (objectCurrent != null) {
+                    return objectCurrent;
                 }
             }
             finally {
@@ -58,8 +63,7 @@ class CachingFetcher<T> implements Fetcher<T> {
             }
             else {
                 this.setPrevObj(value);// store the previously retrieved value
-                                       // for
-                // faster retrieval
+                                       // for faster retrieval
                 return value;
             }
 
@@ -71,7 +75,7 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.exceptionLock.readLock().lock();
 
             try {
-                throw this.prevException;
+                throw this.prevException.get();
             }
             finally {
                 this.exceptionLock.readLock().unlock();
@@ -86,7 +90,7 @@ class CachingFetcher<T> implements Fetcher<T> {
         this.exceptionLock.writeLock().lock();
 
         try {
-            this.prevException = new FetcherException(e);
+            this.prevException = new SoftReference<>(new FetcherException(e));
         }
         finally {
             this.exceptionLock.writeLock().unlock();
@@ -99,7 +103,7 @@ class CachingFetcher<T> implements Fetcher<T> {
         this.objLock.writeLock().lock();
 
         try {
-            this.prevObj = obj;
+            this.prevObj = new SoftReference<>(obj);
         }
         finally {
             this.objLock.writeLock().unlock();
