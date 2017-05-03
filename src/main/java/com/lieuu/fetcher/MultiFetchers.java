@@ -10,7 +10,7 @@ public final class MultiFetchers {
 
     @SafeVarargs
     public final static <T> MultiFetcher<T> getMultiConcurrentFetcher(
-            Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T>... fetchers) {
+            final Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T>... fetchers) {
 
         final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<NonBlockingConcurrentFetcher<T>>(fetchers.length);
 
@@ -26,12 +26,13 @@ public final class MultiFetchers {
     @SafeVarargs
     public final static <T> MultiFetcher<T> getMultiConcurrentFetcher(
             final Fetcher<T>... fetchers) {
-        return getMultiConcurrentFetcher(Fetchers.getExecutorServiceFetcher(), fetchers);
+        return MultiFetchers.getMultiConcurrentFetcher(Fetchers.getExecutorServiceFetcher(),
+            fetchers);
     }
 
     @SafeVarargs
     public final static <T> MultiFetcher<T> getExpiringMultiConcurrentFetcher(
-            Fetcher<ExecutorService> executorServiceFetcher, final long maxTimeMs,
+            final Fetcher<ExecutorService> executorServiceFetcher, final long maxTimeMs,
             final Fetcher<T>... fetchers) {
 
         final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<NonBlockingConcurrentFetcher<T>>(fetchers.length);
@@ -48,7 +49,7 @@ public final class MultiFetchers {
     @SafeVarargs
     public final static <T> MultiFetcher<T> getExpiringMultiConcurrentFetcher(final long maxTimeMs,
             final Fetcher<T>... fetchers) {
-        return getExpiringMultiConcurrentFetcher(Fetchers.getExecutorServiceFetcher(),
+        return MultiFetchers.getExpiringMultiConcurrentFetcher(Fetchers.getExecutorServiceFetcher(),
             maxTimeMs,
             fetchers);
     }

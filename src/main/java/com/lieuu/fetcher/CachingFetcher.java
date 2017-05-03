@@ -32,8 +32,8 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.exceptionLock.readLock().lock();
 
             try {
-                final FetcherException exceptionCurrent = prevException.get();
-                
+                final FetcherException exceptionCurrent = this.prevException.get();
+
                 if ((exceptionCurrent != null)
                     && !(exceptionCurrent.getCause() instanceof FetcherNotReadyException)) {
                     throw exceptionCurrent;
@@ -46,7 +46,7 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.objLock.readLock().lock();
 
             try {
-                final T objectCurrent = prevObj.get();
+                final T objectCurrent = this.prevObj.get();
 
                 if (objectCurrent != null) {
                     return objectCurrent;

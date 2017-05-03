@@ -1,9 +1,9 @@
 package com.lieuu.fetcher;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import com.lieuu.fetcher.exception.FetcherErrorCallback;
 import com.lieuu.fetcher.exception.FetcherException;
 import com.lieuu.fetcher.response.FetcherResponse;
@@ -13,7 +13,7 @@ class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> e.printStackTrace();
 
     private final FetcherErrorCallback errorCallback;
-    private final ImmutableList<CachingFetcher<T>> fetchers;
+    private final List<CachingFetcher<T>> fetchers;
 
     @SafeVarargs
     public WaterfallCachingFetcher(final CachingFetcher<T>... fetchers) {
@@ -32,7 +32,7 @@ class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     public WaterfallCachingFetcher(final FetcherErrorCallback errorCallback,
                                    final List<CachingFetcher<T>> fetchers) {
-        this.fetchers = ImmutableList.copyOf(fetchers);
+        this.fetchers = Collections.unmodifiableList(fetchers);
         this.errorCallback = errorCallback;
     }
 

@@ -9,9 +9,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.lieuu.fetcher.CachingFetcher;
-import com.lieuu.fetcher.Fetcher;
-import com.lieuu.fetcher.Fetchers;
 import com.lieuu.fetcher.caching.concurrent.TestExecutorServiceCachingFetcher;
 import com.lieuu.fetcher.exception.FetcherException;
 

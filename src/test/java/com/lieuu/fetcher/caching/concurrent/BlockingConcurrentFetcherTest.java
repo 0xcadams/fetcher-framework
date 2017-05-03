@@ -36,16 +36,16 @@ public class BlockingConcurrentFetcherTest {
     public void cachingFetcherWrapperNullTest() {
 
         final Fetcher<String> fetcher = Fetchers.getBlockingConcurrentFetcher(() -> {
-            
+
             try {
                 Thread.sleep(1000);
             }
-            catch (InterruptedException e) {
+            catch (final InterruptedException e) {
                 e.printStackTrace();
             }
-            
+
             return null;
-            
+
         });
 
         try {

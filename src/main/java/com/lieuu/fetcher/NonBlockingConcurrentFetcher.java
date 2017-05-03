@@ -12,9 +12,10 @@ final class NonBlockingConcurrentFetcher<T> extends AbstractConcurrentFetcher<T>
 
     /**
      * @param fetcher
-     * @param executorServiceFetcher 
+     * @param executorServiceFetcher
      */
-    public NonBlockingConcurrentFetcher(final Fetcher<T> fetcher, Fetcher<ExecutorService> executorServiceFetcher) {
+    public NonBlockingConcurrentFetcher(final Fetcher<T> fetcher,
+                                        final Fetcher<ExecutorService> executorServiceFetcher) {
         super(fetcher, executorServiceFetcher, NonBlockingConcurrentFetcher.DEFAULT_WAIT_NANOS);
     }
 

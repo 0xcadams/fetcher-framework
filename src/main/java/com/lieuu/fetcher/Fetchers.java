@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import com.google.gson.Gson;
 import com.lieuu.fetcher.exception.FetcherErrorCallback;
 
 public final class Fetchers {
 
     private final static Fetcher<ExecutorService> EXECUTOR_SERVICE_FETCHER = new ExecutorServiceCachingFetcher();
+    private final static Fetcher<Gson> GSON_FETCHER = new GsonCachingFetcher();
 
     @SafeVarargs
     public final static <T> Fetcher<T> getMultiConcurrentFetcher(final Fetcher<T>... fetchers) {
@@ -17,7 +19,7 @@ public final class Fetchers {
 
         for (final Fetcher<T> fetcher : fetchers) {
             fetchersWrapped.add(
-                new NonBlockingConcurrentFetcher<T>(fetcher, getExecutorServiceFetcher()));
+                new NonBlockingConcurrentFetcher<T>(fetcher, Fetchers.getExecutorServiceFetcher()));
         }
 
         return new MultiFetcherValue<T>(new BlockingMultiConcurrentFetcher<T>(fetchersWrapped));
@@ -26,7 +28,7 @@ public final class Fetchers {
 
     @SafeVarargs
     public final static <T> Fetcher<T> getExpiringMultiConcurrentFetcher(
-            Fetcher<ExecutorService> executorServiceFetcher, final long maxTimeMs,
+            final Fetcher<ExecutorService> executorServiceFetcher, final long maxTimeMs,
             final Fetcher<T>... fetchers) {
 
         final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<NonBlockingConcurrentFetcher<T>>(fetchers.length);
@@ -44,7 +46,9 @@ public final class Fetchers {
     @SafeVarargs
     public final static <T> Fetcher<T> getExpiringMultiConcurrentFetcher(final long maxTimeMs,
             final Fetcher<T>... fetchers) {
-        return getExpiringMultiConcurrentFetcher(getExecutorServiceFetcher(), maxTimeMs, fetchers);
+        return Fetchers.getExpiringMultiConcurrentFetcher(Fetchers.getExecutorServiceFetcher(),
+            maxTimeMs,
+            fetchers);
     }
 
     @SafeVarargs
@@ -75,21 +79,22 @@ public final class Fetchers {
     }
 
     public final static <T> Fetcher<T> getBlockingConcurrentFetcher(
-            Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T> fetcher) {
+            final Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T> fetcher) {
         return new BlockingConcurrentFetcher<T>(fetcher, executorServiceFetcher);
     }
 
     public final static <T> Fetcher<T> getNonBlockingConcurrentFetcher(
-            Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T> fetcher) {
+            final Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T> fetcher) {
         return new NonBlockingConcurrentFetcher<T>(fetcher, executorServiceFetcher);
     }
 
     public final static <T> Fetcher<T> getBlockingConcurrentFetcher(final Fetcher<T> fetcher) {
-        return getBlockingConcurrentFetcher(getExecutorServiceFetcher(), fetcher);
+        return Fetchers.getBlockingConcurrentFetcher(Fetchers.getExecutorServiceFetcher(), fetcher);
     }
 
     public final static <T> Fetcher<T> getNonBlockingConcurrentFetcher(final Fetcher<T> fetcher) {
-        return getNonBlockingConcurrentFetcher(getExecutorServiceFetcher(), fetcher);
+        return Fetchers.getNonBlockingConcurrentFetcher(Fetchers.getExecutorServiceFetcher(),
+            fetcher);
     }
 
     public final static <T> Fetcher<T> getCachingFetcher(final Fetcher<T> fetcher) {
@@ -102,7 +107,25 @@ public final class Fetchers {
     }
 
     public final static Fetcher<ExecutorService> getExecutorServiceFetcher() {
-        return EXECUTOR_SERVICE_FETCHER;
+        return Fetchers.EXECUTOR_SERVICE_FETCHER;
+    }
+
+    public final static Fetcher<Gson> getGsonFetcher() {
+        return Fetchers.GSON_FETCHER;
+    }
+
+    public final static class Implementations {
+
+        public final static Fetcher<String> getCachingFileFetcher(
+                final Fetcher<String> fileNameFetcher) {
+            return new CachingFileFetcher(fileNameFetcher);
+        }
+
+        public final static <T> Fetcher<T> getGsonEndpointFetcher(
+                final Fetcher<String> endpointUrlFetcher, final Class<T> clazz) {
+            return new GsonEndpointFetcher<T>(endpointUrlFetcher, clazz);
+        }
+
     }
 
 }

@@ -143,7 +143,7 @@ public class DualConcurrentCachingFetcherTest {
             try {
                 Thread.sleep(1100);
             }
-            catch (InterruptedException e) {
+            catch (final InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -161,10 +161,10 @@ public class DualConcurrentCachingFetcherTest {
 
     }
 
-//    @Test
+    // @Test
     public void testDualConcurrentCachingFetcherFailingThenPassing() {
 
-        int count = 0;
+        final int count = 0;
 
         final Fetcher<String> fetcher = Fetchers.getExpiringMultiConcurrentFetcher(2000, () -> {
             try {
@@ -190,7 +190,7 @@ public class DualConcurrentCachingFetcherTest {
             try {
                 Thread.sleep(6000);
             }
-            catch (InterruptedException e) {
+            catch (final InterruptedException e) {
                 e.printStackTrace();
             }
 

@@ -13,7 +13,8 @@ final class BlockingConcurrentFetcher<T> extends AbstractConcurrentFetcher<T> {
     /**
      * @param fetcher
      */
-    public BlockingConcurrentFetcher(final Fetcher<T> fetcher, final Fetcher<ExecutorService> executorServiceFetcher) {
+    public BlockingConcurrentFetcher(final Fetcher<T> fetcher,
+                                     final Fetcher<ExecutorService> executorServiceFetcher) {
         super(fetcher, executorServiceFetcher, BlockingConcurrentFetcher.DEFAULT_WAIT_NANOS);
     }
 
