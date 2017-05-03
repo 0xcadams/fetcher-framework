@@ -25,7 +25,9 @@ abstract class AbstractConcurrentFetcher<T> implements Fetcher<T> {
     private final long maxWaitNanos;
     private final Fetcher<ExecutorService> executorServiceFetcher;
 
-    protected AbstractConcurrentFetcher(final Fetcher<T> fetcher, final Fetcher<ExecutorService> executorServiceFetcher, final long maxWaitNanos) {
+    protected AbstractConcurrentFetcher(final Fetcher<T> fetcher,
+                                        final Fetcher<ExecutorService> executorServiceFetcher,
+                                        final long maxWaitNanos) {
         this.futureLock = new ReentrantReadWriteLock();
         this.executorServiceFetcher = executorServiceFetcher;
         this.fetcher = fetcher;
@@ -40,7 +42,7 @@ abstract class AbstractConcurrentFetcher<T> implements Fetcher<T> {
         try {
 
             if (this.futureIsNull()) {
-                this.future = executorServiceFetcher.fetch().submit(
+                this.future = this.executorServiceFetcher.fetch().submit(
                     new FetcherCallable<T>(this.fetcher));
             }
 

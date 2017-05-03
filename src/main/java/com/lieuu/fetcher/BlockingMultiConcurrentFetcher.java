@@ -5,9 +5,9 @@
 package com.lieuu.fetcher;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import com.lieuu.fetcher.exception.FetcherErrorCallback;
 import com.lieuu.fetcher.exception.FetcherException;
 import com.lieuu.fetcher.exception.FetcherNotReadyException;
@@ -28,7 +28,7 @@ class BlockingMultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     private final double maxTimeMs;
 
-    private final ImmutableList<NonBlockingConcurrentFetcher<T>> fetchers;
+    private final List<NonBlockingConcurrentFetcher<T>> fetchers;
 
     @SafeVarargs
     public BlockingMultiConcurrentFetcher(final NonBlockingConcurrentFetcher<T>... fetchers) {
@@ -40,7 +40,7 @@ class BlockingMultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public BlockingMultiConcurrentFetcher(final int maxTimeMs,
-                                  final NonBlockingConcurrentFetcher<T>... fetchers) {
+                                          final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(BlockingMultiConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
              BlockingMultiConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
              maxTimeMs,
@@ -49,9 +49,9 @@ class BlockingMultiConcurrentFetcher<T> implements MultiFetcher<T> {
 
     @SafeVarargs
     public BlockingMultiConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                  final FetcherTimeoutCallback timeoutCallback,
-                                  final double maxTimeMs,
-                                  final NonBlockingConcurrentFetcher<T>... fetchers) {
+                                          final FetcherTimeoutCallback timeoutCallback,
+                                          final double maxTimeMs,
+                                          final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(errorCallback, timeoutCallback, maxTimeMs, Arrays.asList(fetchers));
     }
 
@@ -63,11 +63,11 @@ class BlockingMultiConcurrentFetcher<T> implements MultiFetcher<T> {
     }
 
     public BlockingMultiConcurrentFetcher(final FetcherErrorCallback errorCallback,
-                                  final FetcherTimeoutCallback timeoutCallback,
-                                  final double maxTimeMs,
-                                  final List<NonBlockingConcurrentFetcher<T>> fetchers) {
+                                          final FetcherTimeoutCallback timeoutCallback,
+                                          final double maxTimeMs,
+                                          final List<NonBlockingConcurrentFetcher<T>> fetchers) {
 
-        this.fetchers = ImmutableList.copyOf(fetchers);
+        this.fetchers = Collections.unmodifiableList(fetchers);
 
         this.errorCallback = errorCallback;
         this.timeoutCallback = timeoutCallback;

@@ -11,7 +11,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
 
 import com.lieuu.fetcher.Fetcher;
 import com.lieuu.fetcher.Fetchers;
@@ -21,7 +20,7 @@ import com.lieuu.fetcher.exception.FetcherNotReadyException;
 
 public class ExpiringMultiConcurrentFetcherTest {
 
-//    @Test
+    // @Test
     public void testExpiringConcurrentCachingFetcherWrapper() {
 
         final int maxTimeMs = 500;
@@ -195,7 +194,7 @@ public class ExpiringMultiConcurrentFetcherTest {
     //
     // }
 
-//    @Test
+    // @Test
     public void testMultiThreadedExpiringConcurrentCachingFetcherWrapper() {
 
         final int maxTimeMs = 1500;
