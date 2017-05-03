@@ -53,7 +53,7 @@ public class ExpiringCachingFetcherTest {
     @Test
     public void testMultiThreadedExpiringCachingFetcherWrapper() {
 
-        final int maxTimeMs = 250;
+        final int maxTimeMs = 100;
 
         final AtomicInteger count = new AtomicInteger(0);
 
@@ -64,8 +64,8 @@ public class ExpiringCachingFetcherTest {
 
         final List<Future<String>> futures = new ArrayList<>();
 
-        for (int i = 0; i < maxTimeMs; i++) { // run the same number of threads
-                                              // as ms wait time
+        for (int i = 0; i < 4; i++) { // run threads to check value of expiring
+                                      // fetcher
 
             try {
 
@@ -73,10 +73,10 @@ public class ExpiringCachingFetcherTest {
 
                     try {
 
-                        for (int countRuns = 1; countRuns <= 4; countRuns++) {
+                        for (int countRuns = 1; countRuns <= 6; countRuns++) {
 
                             Assertions.assertThat(expire.fetch()).isEqualTo(countRuns);
-                            Thread.sleep(maxTimeMs * 5);
+                            Thread.sleep(maxTimeMs * 7);
 
                         }
 
