@@ -15,7 +15,7 @@ public class GsonEndpointFetcherTest {
     public void gsonEndpointFetcherTest() {
 
         final Fetcher<DemoObject> fetcher = Fetchers.Implementations.getGsonEndpointFetcher(
-            () -> "https://jsonplaceholder.typicode.com/posts/1", DemoObject.class);
+            () -> "https://s3-us-west-2.amazonaws.com/lieuu-fetcher-framework/demo_json.json", DemoObject.class);
 
         try {
             Assertions.assertThat(fetcher.fetch().getId()).isEqualTo(1);
