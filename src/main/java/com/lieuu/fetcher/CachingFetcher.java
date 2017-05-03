@@ -14,14 +14,14 @@ class CachingFetcher<T> implements Fetcher<T> {
 
     private final Fetcher<T> fetcher;
     private SoftReference<T> prevObj;
-    private volatile FetcherException prevException;
+    private SoftReference<FetcherException> prevException;
 
     public CachingFetcher(final Fetcher<T> fetcher) {
         this.objLock = new ReentrantReadWriteLock();
         this.exceptionLock = new ReentrantReadWriteLock();
         this.fetcher = fetcher;
         this.prevObj = new SoftReference<>(null);
-        this.prevException = null;
+        this.prevException = new SoftReference<>(null);
     }
 
     @Override
@@ -32,9 +32,11 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.exceptionLock.readLock().lock();
 
             try {
-                if ((this.prevException != null)
-                    && !(this.prevException.getCause() instanceof FetcherNotReadyException)) {
-                    throw this.prevException;
+                final FetcherException exceptionCurrent = prevException.get();
+                
+                if ((exceptionCurrent != null)
+                    && !(exceptionCurrent.getCause() instanceof FetcherNotReadyException)) {
+                    throw exceptionCurrent;
                 }
             }
             finally {
@@ -44,7 +46,7 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.objLock.readLock().lock();
 
             try {
-                T objectCurrent = prevObj.get();
+                final T objectCurrent = prevObj.get();
 
                 if (objectCurrent != null) {
                     return objectCurrent;
@@ -73,7 +75,7 @@ class CachingFetcher<T> implements Fetcher<T> {
             this.exceptionLock.readLock().lock();
 
             try {
-                throw this.prevException;
+                throw this.prevException.get();
             }
             finally {
                 this.exceptionLock.readLock().unlock();
@@ -88,7 +90,7 @@ class CachingFetcher<T> implements Fetcher<T> {
         this.exceptionLock.writeLock().lock();
 
         try {
-            this.prevException = new FetcherException(e);
+            this.prevException = new SoftReference<>(new FetcherException(e));
         }
         finally {
             this.exceptionLock.writeLock().unlock();
