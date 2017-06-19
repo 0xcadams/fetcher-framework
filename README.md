@@ -9,13 +9,13 @@ Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent 
 
 ## Maven Central
 
-To include Fetcher in your project, add the following [entry](https://search.maven.org/#artifactdetails%7Cnet.lieuu%7Cfetcher-framework%7C1.2%7Cjar) to your `pom.xml`:
+To include Fetcher in your project, add the following [entry](https://search.maven.org/#artifactdetails%7Cnet.lieuu%7Cfetcher-framework%7C1.3%7Cjar) to your `pom.xml`:
 
 ```
 <dependency>
   <groupId>com.lieuu</groupId>
   <artifactId>fetcher-framework</artifactId>
-  <version>1.2</version>
+  <version>1.3</version>
 </dependency>
 ```
 
@@ -33,7 +33,33 @@ Fetcher has a comprehensive set of unit tests that can take several minutes to r
 
 ## Getting Started
 
-Since this project was created to simplify the (longwinded) process of creating concurrent processes in Java, we'll start with a few (oversimplified) examples.
+Many times with Java projects, developers end up creating numerous static variables for each class, which ends up making application initialization take considerably longer. Lazy-loaded singletons are a common practice, and the typical [initialization-on-demand holder](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom) is too verbose for the simple goal it is accomplishing. It can also cause memory issues, since the singleton will not be garbage collected after instantiation. This is a dangerous practice in applications where memory is limited.
+
+The common practice is:
+
+```java
+public class ExpensiveSomething {
+    private ExpensiveSomething() {}
+
+    private static class LazyHolder {
+        final static List<String> INSTANCE = SomeClass.expensiveOperation();
+    }
+
+    public static List<String> getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+}
+```
+
+An alternative to this is the Fetcher framework; we can now use lambda expressions, in a considerably easier and safer way:
+
+```java
+final Fetcher<List<String>> fetcher = Fetchers.getCachingFetcher(() -> SomeClass.expensiveOperation());
+```
+
+The cached object is referenced using a `SoftReference`, making it eligible for garbage collection if needed. It is also thread-safe and exceptions thrown during creation are thrown each time a thread attempts to fetch the object - this makes multiple threads behave the same way when accessing the some object.
+
+Since this project was also created to simplify the (longwinded) process of creating concurrent processes in Java, we'll start with a few (oversimplified) examples.
 
 ```java
 private static final Fetcher<String> FETCHER = Fetchers.getBlockingConcurrentFetcher(
