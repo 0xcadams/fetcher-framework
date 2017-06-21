@@ -225,8 +225,8 @@ public class CachingFetcherTest {
 
         final List<Fetcher<int[]>> listFetchers = new ArrayList<>();
 
-        for (int i = 0; i < 1000; i++) { // create a nuts amount of fetchers,
-                                         // to demo the GC (40 GB worth?!)
+        for (int i = 0; i < 300; i++) { // create a nuts amount of fetchers,
+                                        // to demo the GC (12 GB worth?!)
 
             try {
 
