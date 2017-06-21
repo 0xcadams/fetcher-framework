@@ -174,7 +174,7 @@ public class CachingFetcherTest {
 
         final Fetcher<ExecutorService> exec = () -> Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 750; i++) {
+        for (int i = 0; i < 500; i++) {
 
             try {
 
@@ -223,15 +223,15 @@ public class CachingFetcherTest {
     @Test
     public void cachingMemoryFetcherTest() {
 
-        final List<Fetcher<int[]>> listFetchers = new ArrayList<>();
+        final List<Fetcher<double[]>> listFetchers = new ArrayList<>();
 
-        for (int i = 0; i < 300; i++) { // create a nuts amount of fetchers,
-                                        // to demo the GC (12 GB worth?!)
+        for (int i = 0; i < 80; i++) { // create a nuts amount of fetchers,
+                                       // to demo the GC (~6.4 GB worth?!)
 
             try {
 
-                final Fetcher<int[]> cachingFetcher = Fetchers.getCachingFetcher(() -> {
-                    return new int[10000000]; // ~40 MB int array
+                final Fetcher<double[]> cachingFetcher = Fetchers.getCachingFetcher(() -> {
+                    return new double[10000000]; // ~80 MB double array
                 });
 
                 Assertions.assertThat(cachingFetcher.fetch()).contains(0);
@@ -245,7 +245,7 @@ public class CachingFetcherTest {
 
         }
 
-        for (final Fetcher<int[]> fetcher : listFetchers) {
+        for (final Fetcher<double[]> fetcher : listFetchers) {
             try {
                 Assertions.assertThat(fetcher.fetch()).contains(0);
             }
