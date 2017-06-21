@@ -34,17 +34,14 @@ class BlockingMultiConcurrentFetcher<T> implements MultiFetcher<T> {
     public BlockingMultiConcurrentFetcher(final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(BlockingMultiConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
              BlockingMultiConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
-             BlockingMultiConcurrentFetcher.DEFAULT_MAX_TIME_MS,
-             fetchers);
+             BlockingMultiConcurrentFetcher.DEFAULT_MAX_TIME_MS, fetchers);
     }
 
     @SafeVarargs
     public BlockingMultiConcurrentFetcher(final int maxTimeMs,
                                           final NonBlockingConcurrentFetcher<T>... fetchers) {
         this(BlockingMultiConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
-             BlockingMultiConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
-             maxTimeMs,
-             fetchers);
+             BlockingMultiConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK, maxTimeMs, fetchers);
     }
 
     @SafeVarargs
@@ -58,8 +55,7 @@ class BlockingMultiConcurrentFetcher<T> implements MultiFetcher<T> {
     public BlockingMultiConcurrentFetcher(final List<NonBlockingConcurrentFetcher<T>> fetchers) {
         this(BlockingMultiConcurrentFetcher.DEFAULT_ERROR_CALLBACK,
              BlockingMultiConcurrentFetcher.DEFAULT_TIMEOUT_CALLBACK,
-             BlockingMultiConcurrentFetcher.DEFAULT_MAX_TIME_MS,
-             fetchers);
+             BlockingMultiConcurrentFetcher.DEFAULT_MAX_TIME_MS, fetchers);
     }
 
     public BlockingMultiConcurrentFetcher(final FetcherErrorCallback errorCallback,

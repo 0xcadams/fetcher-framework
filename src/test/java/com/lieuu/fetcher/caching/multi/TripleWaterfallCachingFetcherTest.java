@@ -15,11 +15,9 @@ public class TripleWaterfallCachingFetcherTest {
 
         final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
-            (() -> "test"),
-            (() -> {
+            (() -> "test"), (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> {
+            }), (() -> {
                 throw new FetcherException("should never reach here!");
             }));
 
@@ -45,9 +43,7 @@ public class TripleWaterfallCachingFetcherTest {
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> "test"),
-            (() -> {
+            }), (() -> "test"), (() -> {
                 throw new FetcherException("should never reach here!");
             }));
 
@@ -72,11 +68,9 @@ public class TripleWaterfallCachingFetcherTest {
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> {
+            }), (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> "test"));
+            }), (() -> "test"));
 
         try {
             Assert.assertEquals("test", fetcher.fetch());
@@ -100,11 +94,9 @@ public class TripleWaterfallCachingFetcherTest {
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> {
+            }), (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> {
+            }), (() -> {
                 throw new FetcherException("should reach here!");
             }));
 

@@ -43,7 +43,7 @@ abstract class AbstractConcurrentFetcher<T> implements Fetcher<T> {
 
             if (this.futureIsNull()) {
                 this.future = this.executorServiceFetcher.fetch().submit(
-                    new FetcherCallable<T>(this.fetcher));
+                    new FetcherCallable<>(this.fetcher));
             }
 
         }

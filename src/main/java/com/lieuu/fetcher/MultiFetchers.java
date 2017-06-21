@@ -12,14 +12,14 @@ public final class MultiFetchers {
     public final static <T> MultiFetcher<T> getMultiConcurrentFetcher(
             final Fetcher<ExecutorService> executorServiceFetcher, final Fetcher<T>... fetchers) {
 
-        final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<NonBlockingConcurrentFetcher<T>>(fetchers.length);
+        final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<>(fetchers.length);
 
         for (final Fetcher<T> fetcher : fetchers) {
             fetchersWrapped.add(
-                new NonBlockingConcurrentFetcher<T>(fetcher, executorServiceFetcher));
+                new NonBlockingConcurrentFetcher<>(fetcher, executorServiceFetcher));
         }
 
-        return new BlockingMultiConcurrentFetcher<T>(fetchersWrapped);
+        return new BlockingMultiConcurrentFetcher<>(fetchersWrapped);
 
     }
 
@@ -35,14 +35,14 @@ public final class MultiFetchers {
             final Fetcher<ExecutorService> executorServiceFetcher, final long maxTimeMs,
             final Fetcher<T>... fetchers) {
 
-        final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<NonBlockingConcurrentFetcher<T>>(fetchers.length);
+        final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<>(fetchers.length);
 
         for (final Fetcher<T> fetcher : fetchers) {
             fetchersWrapped.add(
-                new NonBlockingConcurrentFetcher<T>(fetcher, executorServiceFetcher));
+                new NonBlockingConcurrentFetcher<>(fetcher, executorServiceFetcher));
         }
 
-        return new ExpiringMultiConcurrentFetcher<T>(maxTimeMs, fetchersWrapped);
+        return new ExpiringMultiConcurrentFetcher<>(maxTimeMs, fetchersWrapped);
 
     }
 
@@ -50,20 +50,19 @@ public final class MultiFetchers {
     public final static <T> MultiFetcher<T> getExpiringMultiConcurrentFetcher(final long maxTimeMs,
             final Fetcher<T>... fetchers) {
         return MultiFetchers.getExpiringMultiConcurrentFetcher(Fetchers.getExecutorServiceFetcher(),
-            maxTimeMs,
-            fetchers);
+            maxTimeMs, fetchers);
     }
 
     @SafeVarargs
     public final static <T> MultiFetcher<T> getWaterfallFetcher(final Fetcher<T>... fetchers) {
 
-        final List<CachingFetcher<T>> fetchersWrapped = new ArrayList<CachingFetcher<T>>(fetchers.length);
+        final List<CachingFetcher<T>> fetchersWrapped = new ArrayList<>(fetchers.length);
 
         for (final Fetcher<T> fetcher : fetchers) {
-            fetchersWrapped.add(new CachingFetcher<T>(fetcher));
+            fetchersWrapped.add(new CachingFetcher<>(fetcher));
         }
 
-        return new WaterfallCachingFetcher<T>(fetchersWrapped);
+        return new WaterfallCachingFetcher<>(fetchersWrapped);
 
     }
 
@@ -71,13 +70,13 @@ public final class MultiFetchers {
     public final static <T> MultiFetcher<T> getWaterfallFetcher(final FetcherErrorCallback callback,
             final Fetcher<T>... fetchers) {
 
-        final List<CachingFetcher<T>> fetchersWrapped = new ArrayList<CachingFetcher<T>>(fetchers.length);
+        final List<CachingFetcher<T>> fetchersWrapped = new ArrayList<>(fetchers.length);
 
         for (final Fetcher<T> fetcher : fetchers) {
-            fetchersWrapped.add(new CachingFetcher<T>(fetcher));
+            fetchersWrapped.add(new CachingFetcher<>(fetcher));
         }
 
-        return new WaterfallCachingFetcher<T>(callback, fetchersWrapped);
+        return new WaterfallCachingFetcher<>(callback, fetchersWrapped);
 
     }
 

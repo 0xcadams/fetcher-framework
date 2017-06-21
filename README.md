@@ -33,6 +33,8 @@ Fetcher has a comprehensive set of unit tests that can take several minutes to r
 
 ## Getting Started
 
+Before going any further, take a look at the most integral class in this library: [CachingFetcher](src/main/java/com/lieuu/fetcher/CachingFetcher.java). This serves as the backbone for most in-memory caching Fetcher implementations.
+
 Many times with Java projects, developers end up creating numerous static variables for each class, which ends up making application initialization take considerably longer. Lazy-loaded singletons are a common practice, and the typical [initialization-on-demand holder](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom) is too verbose for the simple goal it is accomplishing. It can also cause memory issues, since the singleton will not be garbage collected after instantiation. This is a dangerous practice in applications where memory is limited.
 
 The common practice is:
@@ -54,7 +56,7 @@ public class ExpensiveSomething {
 An alternative to this is the Fetcher framework; we can now use lambda expressions, in a considerably easier and safer way:
 
 ```java
-final Fetcher<List<String>> fetcher = Fetchers.getCachingFetcher(() -> SomeClass.expensiveOperation());
+final static Fetcher<List<String>> fetcher = Fetchers.getCachingFetcher(() -> SomeClass.expensiveOperation());
 ```
 
 The cached object is referenced using a `SoftReference`, making it eligible for garbage collection if needed. It is also thread-safe and exceptions thrown during creation are thrown each time a thread attempts to fetch the object - this makes multiple threads behave the same way when accessing the some object.

@@ -3,13 +3,14 @@ package com.lieuu.fetcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.lieuu.fetcher.caching.concurrent.TestExecutorServiceCachingFetcher;
 import com.lieuu.fetcher.exception.FetcherException;
 
 public class CachingFetcherTest {
@@ -166,20 +167,14 @@ public class CachingFetcherTest {
 
         final CachingFetcher<String> fetcher = (CachingFetcher<String>) Fetchers.getCachingFetcher(
             () -> {
-                try {
-                    Thread.sleep(10);
-                }
-                catch (final InterruptedException e) {
-                    Assert.fail();
-                }
                 return "test_ret";
             });
 
         final List<Future<String>> futures = new ArrayList<>();
 
-        final TestExecutorServiceCachingFetcher exec = new TestExecutorServiceCachingFetcher();
+        final Fetcher<ExecutorService> exec = () -> Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 750; i++) {
 
             try {
 
@@ -187,13 +182,10 @@ public class CachingFetcherTest {
 
                     try {
 
-                        for (int j = 0; j < 1000; j++) {
+                        for (int j = 0; j < 5000; j++) {
 
                             Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
                             Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
-                            fetcher.clearCachedObject();
-                            fetcher.clearCachedObject();
-                            fetcher.clearCachedObject();
                             fetcher.clearCachedObject();
 
                         }
