@@ -14,8 +14,7 @@ public class DualWaterfallCachingFetcherTest {
     public void dualWaterfallCachingFetcherTest() {
 
         final Fetcher<String> fetcher = Fetchers.getWaterfallFetcher(e -> Assert.fail(),
-            (Fetcher<String>) () -> "test",
-            (Fetcher<String>) () -> {
+            (Fetcher<String>) () -> "test", (Fetcher<String>) () -> {
                 throw new FetcherException("should never reach here!");
             });
 
@@ -40,8 +39,7 @@ public class DualWaterfallCachingFetcherTest {
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (Fetcher<String>) () -> {
                 throw new FetcherException("should never reach here!");
-            },
-            (Fetcher<String>) () -> "test");
+            }, (Fetcher<String>) () -> "test");
 
         try {
             Assert.assertEquals("test", fetcher.fetch());
@@ -63,8 +61,7 @@ public class DualWaterfallCachingFetcherTest {
             e -> Assertions.assertThat(e.getMessage()).contains("should never reach here!"),
             (() -> {
                 throw new FetcherException("should never reach here!");
-            }),
-            (() -> {
+            }), (() -> {
                 throw new FetcherException("should reach here!");
             }));
 
@@ -94,8 +91,7 @@ public class DualWaterfallCachingFetcherTest {
 
                 throw new FetcherException("should never reach here!");
 
-            }),
-            (() -> "test"));
+            }), (() -> "test"));
 
         try {
 
@@ -132,8 +128,7 @@ public class DualWaterfallCachingFetcherTest {
 
                 return "test";
 
-            }),
-            (() -> {
+            }), (() -> {
 
                 Assert.fail();
                 return "";

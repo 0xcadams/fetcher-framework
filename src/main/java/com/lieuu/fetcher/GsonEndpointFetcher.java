@@ -32,9 +32,7 @@ public class GsonEndpointFetcher<T> extends CachingFetcher<T> {
                 }
 
             }
-            catch (final UnirestException
-                         | JsonSyntaxException
-                         | JsonIOException
+            catch (final UnirestException | JsonSyntaxException | JsonIOException
                          | UnsupportedEncodingException e) {
                 throw new FetcherException(e);
             }
