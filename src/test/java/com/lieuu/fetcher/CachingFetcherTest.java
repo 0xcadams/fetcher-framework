@@ -174,7 +174,7 @@ public class CachingFetcherTest {
 
         final Fetcher<ExecutorService> exec = () -> Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 250; i++) {
+        for (int i = 0; i < 200; i++) {
 
             try {
 
@@ -182,7 +182,7 @@ public class CachingFetcherTest {
 
                     try {
 
-                        for (int j = 0; j < 5000; j++) {
+                        for (int j = 0; j < 4000; j++) {
 
                             Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
                             Assertions.assertThat(fetcher.fetch()).isEqualTo("test_ret");
@@ -225,8 +225,8 @@ public class CachingFetcherTest {
 
         final List<Fetcher<double[]>> listFetchers = new ArrayList<>();
 
-        for (int i = 0; i < 40; i++) { // create a nuts amount of fetchers,
-                                       // to demo the GC (~3.2 GB worth?!)
+        for (int i = 0; i < 30; i++) { // create a nuts amount of fetchers,
+                                       // to demo the GC (~2.4 GB worth!?)
 
             try {
 

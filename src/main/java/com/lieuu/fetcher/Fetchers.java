@@ -27,6 +27,22 @@ public final class Fetchers {
     }
 
     @SafeVarargs
+    public final static <T> Fetcher<T> getMultiConcurrentFetcher(final int maxTimeMs,
+            final Fetcher<T>... fetchers) {
+
+        final List<NonBlockingConcurrentFetcher<T>> fetchersWrapped = new ArrayList<>(fetchers.length);
+
+        for (final Fetcher<T> fetcher : fetchers) {
+            fetchersWrapped.add(
+                new NonBlockingConcurrentFetcher<>(fetcher, Fetchers.getExecutorServiceFetcher()));
+        }
+
+        return new MultiFetcherValue<>(new BlockingMultiConcurrentFetcher<>(maxTimeMs,
+                                                                              fetchersWrapped));
+
+    }
+
+    @SafeVarargs
     public final static <T> Fetcher<T> getExpiringMultiConcurrentFetcher(
             final Fetcher<ExecutorService> executorServiceFetcher, final long maxTimeMs,
             final Fetcher<T>... fetchers) {
@@ -39,7 +55,7 @@ public final class Fetchers {
         }
 
         return new MultiFetcherValue<>(new ExpiringMultiConcurrentFetcher<>(maxTimeMs,
-                                                                              fetchersWrapped));
+                                                                            fetchersWrapped));
 
     }
 
