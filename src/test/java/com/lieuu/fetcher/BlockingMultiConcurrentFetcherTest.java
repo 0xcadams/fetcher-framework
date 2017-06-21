@@ -55,7 +55,7 @@ public class BlockingMultiConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(() -> {
+        final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(1, () -> {
             throw new FetcherException(new RuntimeException());
         });
 
@@ -120,7 +120,7 @@ public class BlockingMultiConcurrentFetcherTest {
     @Test
     public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
 
-        final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(() -> {
+        final Fetcher<String> fetcher = Fetchers.getMultiConcurrentFetcher(1, () -> {
             throw new FetcherException(new RuntimeException());
         });
 
@@ -164,8 +164,6 @@ public class BlockingMultiConcurrentFetcherTest {
             try {
 
                 final Future<String> future = exec.fetch().submit(() -> {
-
-                    Thread.sleep(1);
 
                     try {
 
