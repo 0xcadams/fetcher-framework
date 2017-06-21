@@ -174,7 +174,7 @@ public class CachingFetcherTest {
 
         final Fetcher<ExecutorService> exec = () -> Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 250; i++) {
 
             try {
 
@@ -225,8 +225,8 @@ public class CachingFetcherTest {
 
         final List<Fetcher<double[]>> listFetchers = new ArrayList<>();
 
-        for (int i = 0; i < 80; i++) { // create a nuts amount of fetchers,
-                                       // to demo the GC (~6.4 GB worth?!)
+        for (int i = 0; i < 40; i++) { // create a nuts amount of fetchers,
+                                       // to demo the GC (~3.2 GB worth?!)
 
             try {
 
