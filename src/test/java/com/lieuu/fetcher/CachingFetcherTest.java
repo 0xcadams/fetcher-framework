@@ -220,4 +220,40 @@ public class CachingFetcherTest {
 
     }
 
+    @Test
+    public void cachingMemoryFetcherTest() {
+
+        final List<Fetcher<int[]>> listFetchers = new ArrayList<>();
+
+        for (int i = 0; i < 1000; i++) { // create a nuts amount of fetchers,
+                                         // to demo the GC (40 GB worth?!)
+
+            try {
+
+                final Fetcher<int[]> cachingFetcher = Fetchers.getCachingFetcher(() -> {
+                    return new int[10000000]; // ~40 MB int array
+                });
+
+                Assertions.assertThat(cachingFetcher.fetch()).contains(0);
+
+                listFetchers.add(cachingFetcher);
+
+            }
+            catch (final FetcherException e) {
+                Assertions.fail(e.getMessage());
+            }
+
+        }
+
+        for (final Fetcher<int[]> fetcher : listFetchers) {
+            try {
+                Assertions.assertThat(fetcher.fetch()).contains(0);
+            }
+            catch (final FetcherException e) {
+                Assertions.fail(e.getMessage());
+            }
+        }
+
+    }
+
 }
