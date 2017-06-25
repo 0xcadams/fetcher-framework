@@ -31,7 +31,7 @@ class ExpiringMultiConcurrentFetcher<T> extends BlockingMultiConcurrentFetcher<T
     }
 
     @Override
-    public synchronized FetcherResponse<T> fetch() throws FetcherException {
+    public final synchronized FetcherResponse<T> fetch() throws FetcherException {
 
         if ((System.currentTimeMillis() - this.lastClearTime) >= this.maxCacheTimeMs) {
             this.clearFuture();

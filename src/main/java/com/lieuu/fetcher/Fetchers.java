@@ -22,7 +22,7 @@ public final class Fetchers {
                 new NonBlockingConcurrentFetcher<>(fetcher, Fetchers.getExecutorServiceFetcher()));
         }
 
-        return new MultiFetcherValue<>(new BlockingMultiConcurrentFetcher<>(fetchersWrapped));
+        return new MultiFetcherValueWrapper<>(new BlockingMultiConcurrentFetcher<>(fetchersWrapped));
 
     }
 
@@ -37,8 +37,8 @@ public final class Fetchers {
                 new NonBlockingConcurrentFetcher<>(fetcher, Fetchers.getExecutorServiceFetcher()));
         }
 
-        return new MultiFetcherValue<>(new BlockingMultiConcurrentFetcher<>(maxTimeMs,
-                                                                              fetchersWrapped));
+        return new MultiFetcherValueWrapper<>(new BlockingMultiConcurrentFetcher<>(maxTimeMs,
+                                                                                   fetchersWrapped));
 
     }
 
@@ -54,8 +54,8 @@ public final class Fetchers {
                 new NonBlockingConcurrentFetcher<>(fetcher, executorServiceFetcher));
         }
 
-        return new MultiFetcherValue<>(new ExpiringMultiConcurrentFetcher<>(maxTimeMs,
-                                                                            fetchersWrapped));
+        return new MultiFetcherValueWrapper<>(new ExpiringMultiConcurrentFetcher<>(maxTimeMs,
+                                                                                   fetchersWrapped));
 
     }
 
@@ -75,7 +75,7 @@ public final class Fetchers {
             fetchersWrapped.add(new CachingFetcher<>(fetcher));
         }
 
-        return new MultiFetcherValue<>(new WaterfallCachingFetcher<>(fetchersWrapped));
+        return new MultiFetcherValueWrapper<>(new WaterfallCachingFetcher<>(fetchersWrapped));
 
     }
 
@@ -89,7 +89,8 @@ public final class Fetchers {
             fetchersWrapped.add(new CachingFetcher<>(fetcher));
         }
 
-        return new MultiFetcherValue<>(new WaterfallCachingFetcher<>(callback, fetchersWrapped));
+        return new MultiFetcherValueWrapper<>(new WaterfallCachingFetcher<>(callback,
+                                                                            fetchersWrapped));
 
     }
 

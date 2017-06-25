@@ -6,7 +6,6 @@ package com.lieuu.fetcher;
 
 import com.lieuu.fetcher.response.FetcherResponse;
 import com.lieuu.fetcher.response.source.Source;
-import com.lieuu.fetcher.response.source.UnlimitedSource;
 
 class FetcherResponseFactory<S> {
 
@@ -16,7 +15,7 @@ class FetcherResponseFactory<S> {
 
             @Override
             public Source source() {
-                return UnlimitedSource.valueOf(rankFinal);
+                return Source.valueOf(rankFinal);
             }
 
             @Override

@@ -71,7 +71,15 @@ class CachingFetcher<T> implements Fetcher<T> {
         catch (final Exception e) {
 
             this.setPrevException(e);
-            throw e;
+
+            this.exceptionLock.readLock().lock();
+
+            try {
+                throw this.prevException.get();
+            }
+            finally {
+                this.exceptionLock.readLock().unlock();
+            }
 
         }
 

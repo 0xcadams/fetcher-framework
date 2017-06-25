@@ -8,6 +8,6 @@ public interface FetcherErrorCallback {
      *
      * @param e
      */
-    public void onError(Throwable e);
+    public void onError(final Throwable e);
 
 }

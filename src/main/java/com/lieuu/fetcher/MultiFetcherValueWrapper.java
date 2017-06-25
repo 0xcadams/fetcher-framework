@@ -6,14 +6,14 @@ package com.lieuu.fetcher;
 
 import com.lieuu.fetcher.exception.FetcherException;
 
-class MultiFetcherValue<T> implements Fetcher<T> {
+class MultiFetcherValueWrapper<T> implements Fetcher<T> {
 
     private final MultiFetcher<T> fetcher;
 
     /**
      * @param fetcher
      */
-    public MultiFetcherValue(final MultiFetcher<T> fetcher) {
+    public MultiFetcherValueWrapper(final MultiFetcher<T> fetcher) {
         this.fetcher = fetcher;
     }
 
@@ -22,7 +22,7 @@ class MultiFetcherValue<T> implements Fetcher<T> {
      * @see com.rentworthy.fetcher.Fetcher#fetch()
      */
     @Override
-    public T fetch() throws FetcherException {
+    public final T fetch() throws FetcherException {
         return this.fetcher.fetch().value();
     }
 
