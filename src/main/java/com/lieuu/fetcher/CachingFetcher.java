@@ -62,8 +62,8 @@ class CachingFetcher<T> implements Fetcher<T> {
                 throw new FetcherException(new NullPointerException("Value from fetcher was null"));
             }
             else {
-                this.setPrevObj(value);// store the previously retrieved value
-                                       // for faster retrieval
+                this.setPrevObj(value); // store the previously retrieved value
+                                        // for faster retrieval
                 return value;
             }
 
@@ -71,15 +71,7 @@ class CachingFetcher<T> implements Fetcher<T> {
         catch (final Exception e) {
 
             this.setPrevException(e);
-
-            this.exceptionLock.readLock().lock();
-
-            try {
-                throw this.prevException.get();
-            }
-            finally {
-                this.exceptionLock.readLock().unlock();
-            }
+            throw e;
 
         }
 
