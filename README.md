@@ -1,4 +1,7 @@
-# Fetcher [![Build Status](https://travis-ci.org/lieuu/fetcher-framework.svg?branch=master)](https://travis-ci.org/lieuu/fetcher-framework)
+# Fetcher
+
+[![Build Status](https://travis-ci.org/lieuu/fetcher-framework.svg?branch=master)](https://travis-ci.org/lieuu/fetcher-framework) [![Maven 
+Central](https://maven-badges.herokuapp.com/maven-central/com.lieuu/fetcher-framework/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.lieuu/fetcher-framework)
 
 Fetcher is a Java framework for effortlessly writing loosely-coupled concurrent code designed for failure.
 

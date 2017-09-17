@@ -8,6 +8,6 @@ public interface FetcherTimeoutCallback {
      *
      * @param fetcherNotReadyException
      */
-    public void onTimeout(FetcherNotReadyException fetcherNotReadyException);
+    public void onTimeout(final FetcherNotReadyException fetcherNotReadyException);
 
 }

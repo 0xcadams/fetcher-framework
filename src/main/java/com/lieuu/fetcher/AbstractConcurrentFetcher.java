@@ -61,10 +61,7 @@ abstract class AbstractConcurrentFetcher<T> implements Fetcher<T> {
             catch (final TimeoutException e1) {
                 throw new FetcherNotReadyException(e1);
             }
-            catch (final ExecutionException | InterruptedException e1) {
-                throw new FetcherException(e1);
-            }
-            catch (final NullPointerException e1) {
+            catch (final ExecutionException | InterruptedException | NullPointerException e1) {
                 throw new FetcherException(e1);
             }
 

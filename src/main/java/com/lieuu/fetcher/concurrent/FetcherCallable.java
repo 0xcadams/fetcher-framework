@@ -25,7 +25,7 @@ public class FetcherCallable<T> implements Callable<T> {
      * @see java.util.concurrent.Callable#call()
      */
     @Override
-    public T call() throws FetcherException {
+    public final T call() throws FetcherException {
         return this.fetcher.fetch();
     }
 

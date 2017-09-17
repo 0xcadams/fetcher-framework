@@ -12,6 +12,7 @@ class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
 
     private final static FetcherErrorCallback DEFAULT_ERROR_CALLBACK = e -> e.printStackTrace();
 
+    private final int fetchersSize;
     private final FetcherErrorCallback errorCallback;
     private final List<CachingFetcher<T>> fetchers;
 
@@ -34,16 +35,17 @@ class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
                                    final List<CachingFetcher<T>> fetchers) {
         this.fetchers = Collections.unmodifiableList(fetchers);
         this.errorCallback = errorCallback;
+        this.fetchersSize = fetchers.size();
     }
 
     @Override
     public FetcherResponse<T> fetch() throws FetcherException {
 
-        if (this.fetchers.size() == 0) {
+        if (this.fetchersSize == 0) {
             throw new FetcherException("Number of fetchers was zero!");
         }
 
-        for (int i = 0; i < (this.fetchers.size() - 1); i++) {
+        for (int i = 0; i < (this.fetchersSize - 1); i++) {
 
             final CachingFetcher<T> fetcher = this.fetchers.get(i);
 
@@ -57,7 +59,7 @@ class WaterfallCachingFetcher<T> implements MultiFetcher<T> {
         }
 
         return FetcherResponseFactory.getFetcherResponse(this.fetchers.size(),
-            this.fetchers.get(this.fetchers.size() - 1).fetch());
+            this.fetchers.get(this.fetchersSize - 1).fetch());
 
     }
 
