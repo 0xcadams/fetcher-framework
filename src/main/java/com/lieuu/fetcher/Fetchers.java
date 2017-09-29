@@ -1,16 +1,14 @@
 package com.lieuu.fetcher;
 
+import com.lieuu.fetcher.exception.FetcherErrorCallback;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import com.google.gson.Gson;
-import com.lieuu.fetcher.exception.FetcherErrorCallback;
-
 public final class Fetchers {
 
     private final static Fetcher<ExecutorService> EXECUTOR_SERVICE_FETCHER = new ExecutorServiceCachingFetcher();
-    private final static Fetcher<Gson> GSON_FETCHER = new GsonCachingFetcher();
 
     @SafeVarargs
     public final static <T> Fetcher<T> getMultiConcurrentFetcher(final Fetcher<T>... fetchers) {
@@ -126,20 +124,11 @@ public final class Fetchers {
         return Fetchers.EXECUTOR_SERVICE_FETCHER;
     }
 
-    public final static Fetcher<Gson> getGsonFetcher() {
-        return Fetchers.GSON_FETCHER;
-    }
-
     public final static class Implementations {
 
         public final static Fetcher<String> getCachingFileFetcher(
                 final Fetcher<String> fileNameFetcher) {
             return new CachingFileFetcher(fileNameFetcher);
-        }
-
-        public final static <T> Fetcher<T> getGsonEndpointFetcher(
-                final Fetcher<String> endpointUrlFetcher, final Class<T> clazz) {
-            return new GsonEndpointFetcher<>(endpointUrlFetcher, clazz);
         }
 
     }
