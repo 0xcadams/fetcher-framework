@@ -5,8 +5,8 @@ import java.util.concurrent.Executors;
 
 class ExecutorServiceCachingFetcher extends CachingFetcher<ExecutorService> {
 
-    public ExecutorServiceCachingFetcher() {
-        super(() -> Executors.newCachedThreadPool());
-    }
+  public ExecutorServiceCachingFetcher() {
+    super(() -> Executors.newCachedThreadPool());
+  }
 
 }
