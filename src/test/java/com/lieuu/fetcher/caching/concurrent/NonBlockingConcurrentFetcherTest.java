@@ -12,108 +12,108 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class NonBlockingConcurrentFetcherTest {
-
-  @Test
-  public void cachingFetcherWrapperTest() {
-
-    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> "test");
-
-    try {
-      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
-      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
-      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
-      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
-      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
-    }
-    catch (final FetcherException e) {
-      Assert.fail();
-    }
-
-  }
-
-  @Test
-  public void cachingFetcherWrapperNullTest() {
-
-    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> null);
-
-    try {
-      fetcher.fetch();
-      Assertions.assertThat(fetcher.fetch()).isNull();
-    }
-    catch (final FetcherException e) {
-      Assert.fail();
-    }
-
-  }
-
-  @Test
-  public void cachingFetcherWrapperFetcherExceptionTest() {
-
-    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> {
-      throw new FetcherException(new RuntimeException());
-    });
-
-    try {
-      fetcher.fetch();
-      Assert.fail();
-    }
-    catch (final FetcherException e) {
-      Assert.assertEquals(e.getCause().getCause().getClass(), FetcherException.class);
-    }
-
-  }
-
-  @Test
-  public void cachingFetcherWrapperSleepTest() {
-
-    final int timeWait = 1000;
-
-    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> {
-
-      try {
-        Thread.sleep(timeWait); // do something time-consuming
-      }
-      catch (final InterruptedException e) {
-        throw new FetcherException(e);
-      }
-
-      return "";
-
-    });
-
-    try {
-      fetcher.fetch();
-      Assert.fail();
-    }
-    catch (final FetcherException e) {
-      Assertions.assertThat(e.getClass()).isEqualTo(FetcherNotReadyException.class);
-    }
-
-    try {
-      Thread.sleep(timeWait + 50); // do something time-consuming
-    }
-    catch (final InterruptedException e) {
-      Assertions.fail(e.getMessage());
-    }
-
-    try {
-
-      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
-
-    }
-    catch (final FetcherException e) {
-      e.printStackTrace();
-      Assert.fail();
-    }
-
-  }
-
+//public class NonBlockingConcurrentFetcherTest {
+//
+//  @Test
+//  public void cachingFetcherWrapperTest() {
+//
+//    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> "test");
+//
+//    try {
+//      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+//      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+//      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+//      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+//      Assertions.assertThat(fetcher.fetch()).isEqualTo("test");
+//    }
+//    catch (final FetcherException e) {
+//      Assert.fail();
+//    }
+//
+//  }
+//
+//  @Test
+//  public void cachingFetcherWrapperNullTest() {
+//
+//    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> null);
+//
+//    try {
+//      fetcher.fetch();
+//      Assertions.assertThat(fetcher.fetch()).isNull();
+//    }
+//    catch (final FetcherException e) {
+//      Assert.fail();
+//    }
+//
+//  }
+//
+//  @Test
+//  public void cachingFetcherWrapperFetcherExceptionTest() {
+//
+//    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> {
+//      throw new FetcherException(new RuntimeException());
+//    });
+//
+//    try {
+//      fetcher.fetch();
+//      Assert.fail();
+//    }
+//    catch (final FetcherException e) {
+//      Assert.assertEquals(e.getCause().getCause().getClass(), FetcherException.class);
+//    }
+//
+//  }
+//
+//  @Test
+//  public void cachingFetcherWrapperSleepTest() {
+//
+//    final int timeWait = 1000;
+//
+//    final Fetcher<String> fetcher = Fetchers.getNonBlockingConcurrentFetcher(() -> {
+//
+//      try {
+//        Thread.sleep(timeWait); // do something time-consuming
+//      }
+//      catch (final InterruptedException e) {
+//        throw new FetcherException(e);
+//      }
+//
+//      return "";
+//
+//    });
+//
+//    try {
+//      fetcher.fetch();
+//      Assert.fail();
+//    }
+//    catch (final FetcherException e) {
+//      Assertions.assertThat(e.getClass()).isEqualTo(FetcherNotReadyException.class);
+//    }
+//
+//    try {
+//      Thread.sleep(timeWait + 50); // do something time-consuming
+//    }
+//    catch (final InterruptedException e) {
+//      Assertions.fail(e.getMessage());
+//    }
+//
+//    try {
+//
+//      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+//      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+//      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+//      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+//      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+//      Assert.assertEquals(fetcher.fetch(), fetcher.fetch());
+//
+//    }
+//    catch (final FetcherException e) {
+//      e.printStackTrace();
+//      Assert.fail();
+//    }
+//
+//  }
+//
   // @Test
   // public void cachingFetcherWrapperDoubleFetcherExceptionTest() {
   //
@@ -218,5 +218,5 @@ public class NonBlockingConcurrentFetcherTest {
   // }
   //
   // }
-
-}
+//
+//}
