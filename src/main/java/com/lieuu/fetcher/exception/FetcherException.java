@@ -17,7 +17,7 @@ public class FetcherException extends Exception {
     /**
      * Custom exception to create from fetch() implementation.
      *
-     * @param val
+     * @param string
      *            custom string from fetch error
      */
     public FetcherException(final String string) {
