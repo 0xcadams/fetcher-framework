@@ -4,8 +4,8 @@ import com.lieuu.fetcher.response.source.Source;
 
 public interface FetcherResponse<T> {
 
-    public Source source();
+  public Source source();
 
-    public T value();
+  public T value();
 
 }

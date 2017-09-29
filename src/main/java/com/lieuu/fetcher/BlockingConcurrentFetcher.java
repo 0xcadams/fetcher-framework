@@ -8,14 +8,14 @@ import java.util.concurrent.ExecutorService;
 
 final class BlockingConcurrentFetcher<T> extends AbstractConcurrentFetcher<T> {
 
-    private final static long DEFAULT_WAIT_NANOS = Long.MAX_VALUE; // MAX_VALUE
+  private final static long DEFAULT_WAIT_NANOS = Long.MAX_VALUE; // MAX_VALUE
 
-    /**
-     * @param fetcher
-     */
-    public BlockingConcurrentFetcher(final Fetcher<T> fetcher,
-                                     final Fetcher<ExecutorService> executorServiceFetcher) {
-        super(fetcher, executorServiceFetcher, BlockingConcurrentFetcher.DEFAULT_WAIT_NANOS);
-    }
+  /**
+   * @param fetcher
+   */
+  public BlockingConcurrentFetcher(final Fetcher<T> fetcher,
+    final Fetcher<ExecutorService> executorServiceFetcher) {
+    super(fetcher, executorServiceFetcher, BlockingConcurrentFetcher.DEFAULT_WAIT_NANOS);
+  }
 
 }
